@@ -1,5 +1,5 @@
 require "starman/version"
 
 module Starman
-  # Your code goes here...
+  autoload :App, 'starman/app'
 end

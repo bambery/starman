@@ -20,4 +20,17 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "cucumber"
+  spec.add_development_dependency "capybara"
+#  spec.add_development_dependency "factory-girl"
+
+  spec.add_dependency 'sinatra', '~> 1.3.3'
+  spec.add_dependency 'less'
+  spec.add_dependency 'haml'
+  spec.add_dependency 'sinatra-partial'
+
+  # memcached
+  spec.add_dependency 'dalli'
+  spec.add_dependency 'kgio'
 end
