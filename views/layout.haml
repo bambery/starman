@@ -1,0 +1,7 @@
+%html
+  %head
+    %title #{@title ? @title : "site"} 
+    != css :layout
+  %body
+    .container
+      = yield

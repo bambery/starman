@@ -6,6 +6,8 @@ gem 'thin'
 # I am lazy and I don't like closing tags or repeating styles
 gem 'haml'
 gem 'less'
+gem 'therubyracer'
+gem 'sinatra-assetpack'
 
 # sinatra helpers
 gem 'sinatra-partial'

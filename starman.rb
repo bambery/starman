@@ -1,23 +1,31 @@
 require 'sinatra/base'
+require 'sinatra/assetpack'
+require 'dalli'
+require 'less'
 
 class Starman < Sinatra::Base
 
   set :root, File.dirname(__FILE__)
-
   set :memcached, Dalli::Client.new
 
-  # using less for stylesheets
-  set :less, :views => 'assets/less'
-  Less.paths << "#{Starman.root}/assets/less"
+  register Sinatra::AssetPack
+
+  assets do 
+    css_dir = 'app/css'
+    bootstrap_dir = 'app/css/bootstrap'
+    serve '/css', :from => css_dir
+
+    Less.paths << File.join(Starman.root, css_dir) << File.join(Starman.root, bootstrap_dir)
+
+    css :layout, [
+      '/css/bootstrap/bootstrap.css', '/css/bootstrap/responsive.css',
+      '/css/layout.css'
+    ]
+    css_compression :less
+  end
 
   get '/' do
-    'moop'
+    haml :index 
   end
-
-  # use less for css
-  get '/css/:style.css' do
-    less params[:style].to_sym
-  end
-
 
 end
