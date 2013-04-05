@@ -18,7 +18,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+  If installed using Bundler, the gem will automatically be included. If manually installed: require 'starman'
+
+  # Writing content
+
+  Content lives in the /content directory by default. This and other defaults can be changed in /config/starman_config.yml. Create subdirectories in /content and write markdown posts in there.
+
+
 
 ## Contributing
 
