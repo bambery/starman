@@ -1,0 +1,22 @@
+#! /bin/bash
+
+starman_syntax ()
+{ echo '' 
+  echo 'Usage:'
+  echo 'starman new [section_name] - creates new section'
+  echo 'starman new [section_name] [post_name] - creates a new post in the given section with the given post name and opens a post template in vim' 
+  echo ''
+}
+if [ "$#" -eq "0" ]
+then
+  starman_syntax
+elif [[ "$#" -eq "2" && "$1" = "new" ]] 
+then
+  if [ "$2" ]
+  echo "creating new section $2"
+else
+  echo "ERROR: starman doesn't understand $@"
+  starman_syntax
+fi
+
+exit 0

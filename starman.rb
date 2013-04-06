@@ -10,9 +10,10 @@ class Starman < Sinatra::Base
 
   register Sinatra::AssetPack
 
+  # assetpack config
   assets do 
-    css_dir = 'app/css'
-    bootstrap_dir = 'app/css/bootstrap'
+    css_dir = 'assets/css'
+    bootstrap_dir = 'assets/css/bootstrap'
     serve '/css', :from => css_dir
 
     Less.paths << File.join(Starman.root, css_dir) << File.join(Starman.root, bootstrap_dir)
