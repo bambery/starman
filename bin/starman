@@ -3,17 +3,41 @@
 starman_syntax ()
 { echo '' 
   echo 'Usage:'
-  echo 'starman new [section_name] - creates new section'
-  echo 'starman new [section_name] [post_name] - creates a new post in the given section with the given post name and opens a post template in vim' 
+  echo 'starman new section [section_name] - creates new section'
+  echo 'starman new [section_name] post [post_name] - creates a new post in the given section with the given post name and opens a post template in vim' 
   echo ''
 }
-if [ "$#" -eq "0" ]
+
+app_root="$( dirname $( cd "$( dirname "$0" )" && pwd) )"
+content_dir="$app_root/content"
+
+if [[ "$#" -eq "0" || "$1" = "help" ]]
 then
   starman_syntax
-elif [[ "$#" -eq "2" && "$1" = "new" ]] 
+elif [[ "$#" -eq "3" && "$1" = "new" && "$2" = "section" ]]
+then 
+  if [ -d "$content_dir/$3" ] 
+  then 
+    echo "section $3 already exists"
+  else
+    echo "creating section called $3"
+    mkdir "$content_dir/$3"
+  fi
+elif [[ "$#" -eq "4" && "$1" = "new" && "$3" = "post" ]]
 then
-  if [ "$2" ]
-  echo "creating new section $2"
+  if [ -d "$content_dir/$2" ] 
+  then
+    if [ -e "$content_dir/$2/$4" ]
+    then
+      echo "a post already exists in section $2 with the name $4"
+    else
+      echo "creating new $2 post named $4"
+      vim "$content_dir/$2/$4.mdown" -c "r $app_root/config/$2_post_template.txt" -c "echo \"New post template created, please hit enter\""
+    fi
+  else 
+    echo "ERROR: a section with the name $2 does not exist - please create it first"
+    starman_syntax
+  fi
 else
   echo "ERROR: starman doesn't understand $@"
   starman_syntax
