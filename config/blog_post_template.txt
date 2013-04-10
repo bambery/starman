@@ -1,6 +1,7 @@
-Date: 
-Summary:
-----------
+Date: dd/mm/yyyy 
+Summary: 100 characters or less 
+
+*-----*-----*
 
 #Title goes here
 
