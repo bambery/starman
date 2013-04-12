@@ -7,11 +7,20 @@ describe Post do
   context 'post creation' do
 
     before(:each) do
-      @test_post = FactoryGirl.build(:post)
+      Post.any_instance.stub(:post_exists?) { true }
+      Post.any_instance.stub(:read_post_file) { FactoryGirl.create(:post_data) }
+      @test_post = FactoryGirl.build(:properly_formatted_post)
     end
 
     it 'assigns the name' do
-      @test_post.name.should eq("blog/foo")
+      @test_post.name.should eq("blog/goodbye_love")
     end
+
+    it 'assigns the section' do
+    end
+
+    it 'assigns the basename' do 
+    end
+
   end
 end

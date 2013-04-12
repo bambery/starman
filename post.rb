@@ -16,12 +16,16 @@ class Post
   end
 
   def parse_file
-    # posts need to be relatively small files, as this method will consume a lot of memory if the files are large. Fine for my use.
-    file_data = File.read(File.join(ENV['POSTS_DIR'], @name + ".mdown"))
+    file_data = read_post_file 
     # TODO: check for proper formatting
     # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
     metadata_text, content = file_data.split("*-----*-----*")
-    return parse_metadata(metadata_text), content.strip! 
+    return parse_metadata(metadata_text.strip), content.strip! 
+  end
+
+  def read_post_file
+    # posts need to be relatively small files, as this method will consume a lot of memory if the files are large. Fine for my use.
+    File.read(File.join(ENV['POSTS_DIR'], @name + ".mdown"))
   end
 
   def post_exists?(post_name)
