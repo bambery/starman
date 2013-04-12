@@ -4,7 +4,7 @@ class Post
 
   def initialize(post_name)
 
-    raise ArgumentError, 'posts must be initialized with a name in the form [section]/[filename w/out ext]' unless /^\w+\/\w+$/ === post_name 
+    raise NameError, 'posts must be initialized with a name in the form [section]/[filename w/out ext]' unless /^\w+\/\w+$/ === post_name 
 
     raise ArgumentError, "trying to create a post with the name #{post_name} failed because this file does not exist on the system." unless post_exists?(post_name)
     
@@ -20,7 +20,7 @@ class Post
     # TODO: check for proper formatting
     # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
     metadata_text, content = file_data.split("*-----*-----*")
-    return parse_metadata(metadata_text.strip), content.strip! 
+    return parse_file_data(metadata_text.strip, content.strip)
   end
 
   def read_post_file
@@ -33,24 +33,42 @@ class Post
     return File.exist?(File.join(ENV['POSTS_DIR'], post_name + ".mdown"))
   end
 
-  def parse_metadata(metadata_text)
+  def parse_file_data(metadata_text, content)
     # parses date and entry summary, discards any extra metadata
     metadata = Hash.new
+    required_metadata = ["date", "summary"]
     metadata_text.lines.each do |mdata_line|
       if is_metadata?(mdata_line)
         #delimit on first colon 
         key, value = mdata_line.split(/\s*:\s*/, 2)
         case key.downcase
-        when "date"
-          # TODO date format localization
-          metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
-        when "summary"
-          metadata["summary"] = value[0..100].strip
+          when "date"
+            # TODO date format localization
+            metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
+            required_metadata.delete("date")
+          when "summary"
+            metadata["summary"] = value[0..100].strip
+            required_metadata.delete("summary")
         end #end case
       else p "not valid metadata: #{mdata_line}"
-      end
-    end
-    return metadata
+      end #end if
+    end # end do
+      
+    # handle missing required fields
+    if !required_metadata.empty?
+      required_metadata.each do |item|
+        case item
+          when "date"
+            # TODO need a custom exception to handle this so app doesn't blow up on empty entries, should 404 instead
+            raise ArgumentError, "Posts must have a date defined on them: #{post_name}"
+          when "summary"
+            content = "This entry is empty. Please write something here!" if content.empty? 
+            metadata["summary"] = content[0..100].strip 
+        end # end case
+      end # end do
+    end # end if
+
+    return metadata, content
   end
 
   def is_metadata?(mdata_line)
