@@ -5,5 +5,5 @@ FactoryGirl.define do
     post_name "blog/foo"
   end
 
-  initialize_with { Post.build_with_name(post_name) }
+  initialize_with { new(post_name) }
 end

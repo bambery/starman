@@ -1,6 +1,7 @@
 ENV['RACK_ENV'] = 'test'
 
-require 'starman'
+#require File.expand_path('../starman', File.dirname(__FILE__))
+require File.expand_path('../config/boot', File.dirname(__FILE__))
 require 'rspec'
 require 'rack/test'
 require 'capybara/rspec'
