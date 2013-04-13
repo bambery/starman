@@ -19,10 +19,25 @@ class Post
 
   end
 
+  def ==(other)
+    if 
+      self.class == other.class &&
+      @name == other.name &&
+      @section == other.section &&
+      @basename == other.basename &&
+      @metadata == other.metadata &&
+      @content == other.content 
+      return true
+    else
+      return false
+    end
+  end
+
   def parse_file
     file_data = read_post_file 
     # TODO: check for proper formatting
     # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
+    raise ArgumentError, "A post must have the *-----*-----* divider between the metadata and the content." if !file_data.include?("*-----*-----*")
     metadata_text, content = file_data.split("*-----*-----*")
     return parse_file_data(metadata_text.strip, content.strip)
   end
@@ -43,6 +58,7 @@ class Post
     required_data = ["date", "summary"]
     required_data << "content" if content.empty?
     metadata_text.lines.each do |mdata_line|
+      mdata_line.strip!
       if is_metadata?(mdata_line)
         #delimit on first colon 
         key, value = mdata_line.split(/\s*:\s*/, 2)
@@ -50,13 +66,17 @@ class Post
           when "date"
             # TODO date format localization
             # TODO custom exception to capture improperly formatted dates and 404 on entry
+            raise ArgumentError, "Posts must have a date defined on them: #{@name}" if value.strip.empty?
             metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
             required_data.delete("date")
           when "summary"
-            metadata["summary"] = value[0..100].strip
-            required_data.delete("summary")
+            if !value.strip.empty?
+              metadata["summary"] = value[0..100].strip
+              required_data.delete("summary")
+            end
         end #end case
-      else p "not valid metadata: #{mdata_line}"
+        # TODO this should probably be a warning in the log file
+      else p "not valid metadata in post #{@name}: \'#{mdata_line}\'"
       end #end if
     end # end do
       
@@ -66,7 +86,7 @@ class Post
         case item
           when "date"
             # TODO need a custom exception to handle this so app doesn't blow up on empty entries, should 404 instead
-            raise ArgumentError, "Posts must have a date defined on them: #{post_name}"
+            raise ArgumentError, "Posts must have a date defined on them: #{@name}"
           when "summary"
             content = "This entry is empty. Please write something here!" if content.empty? 
             required_data.delete("content") {required_data}
@@ -82,7 +102,7 @@ class Post
 
   def is_metadata?(mdata_line)
     # metadata keywords must be named with letters, numbers, or underscores and separated from their values by a colon 
-    mdata_line.match(/^[\w]+:.+/)
+    mdata_line.match(/^[\w]+:.*/)
   end
 
   def date
