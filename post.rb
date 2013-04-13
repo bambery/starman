@@ -85,4 +85,12 @@ class Post
     mdata_line.match(/^[\w]+:.+/)
   end
 
+  def date
+    metadata["date"]
+  end
+
+  def summary
+    metadata["summary"]
+  end
+
 end
