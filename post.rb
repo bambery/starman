@@ -6,7 +6,7 @@ class Post
 
   def initialize(post_name)
 
-    raise SystemCallError, "You're not loading the config which contains the env vars." if ENV['POSTS_DIR'].empty?
+    raise SystemCallError, "You're not loading the config which contains the env vars." if ENV['POSTS_DIR'].nil?
 
     raise NameError, 'posts must be initialized with a name in the form [section]/[filename w/out ext]' unless /^\w+\/\w+$/ === post_name 
 

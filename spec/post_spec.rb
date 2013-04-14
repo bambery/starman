@@ -135,6 +135,6 @@ describe Post, "#initialize" do
     end
 
 
-  end
+  end # end invalid post file
 
 end # end Post#initialize

@@ -1,15 +1,6 @@
 require 'factory_girl'
 
 FactoryGirl.define do
-#  factory :post do
-#
-#    factory :properly_formatted_post do
-#      post_name "blog/goodbye_love"
-#    end
-#
-#    initialize_with { new(post_name) }
-#  
-#  end
 
   factory :post_data, class: String  do
     skip_create
