@@ -6,5 +6,13 @@ module CachingHelpers
       settings.memcached.set(post_path, post) if post.is_valid? 
     end
     post.is_valid? ? post : nil
+
+  end
+
+end
+
+module LogHelpers
+  def add_error_to_log(e)
+    logger.error("#{e.class.name}: #{e.message} \n #{e.backtrace.join("\n")}")
   end
 end

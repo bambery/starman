@@ -24,9 +24,9 @@ class Post
     end
   end
 
-  def is_valid?
-    !(@name.nil? || @section.nil? || @basename.nil? || @metadata.nil? || @content.nil?)
-  end
+#  def is_valid?
+#    !(@name.nil? || @section.nil? || @basename.nil? || @metadata.nil? || @content.nil?)
+#  end
 
 #  def ==(other)
 #    if 
@@ -44,22 +44,19 @@ class Post
 
   def parse_file
     if ENV['POSTS_DIR'].nil?
-      #write to log
-      #raise ArgumentError, "You're not loading the config which contains the env vars."
-      return nil, nil
+      # write to log
+      raise StarmanError, "You're not loading the config which contains the env vars."
     elsif !Post.post_exists?(@name)
       # write to log
-      #raise ArgumentError, "trying to create a post with the name #{@name} failed because this file does not exist on the system." 
-      return nil, nil
+      raise StarmanError, "trying to create a post with the name #{@name} failed because this file does not exist on the system." 
     end
 
     file_data = read_post_file 
-    # TODO: check for proper formatting
+    # TODO: better check for proper formatting
     # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
     if !file_data.include?("*-----*-----*")
       #write to log
-      raise ArgumentError, "A post must have the *-----*-----* divider between the metadata and the content." 
-      return nil, nil
+      raise StarmanError, "A post must have the *-----*-----* divider between the metadata and the content." 
     end
     metadata_text, content = file_data.split("*-----*-----*")
     return parse_file_data(metadata_text.strip, content.strip)
@@ -89,7 +86,7 @@ class Post
           when "date"
             # TODO date format localization
             # TODO custom exception to capture improperly formatted dates and 404 on entry
-            raise ArgumentError, "Posts must have a date defined on them: #{@name}" if value.strip.empty?
+            raise StarmanError, "Posts must have a date defined on them: #{@name}" if value.strip.empty?
             metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
             required_data.delete("date")
           when "summary"
@@ -109,7 +106,7 @@ class Post
         case item
           when "date"
             # TODO need a custom exception to handle this so app doesn't blow up on empty entries, should 404 instead
-            raise ArgumentError, "Posts must have a date defined on them: #{@name}"
+            raise StarmanError, "Posts must have a date defined on them: #{@name}"
           when "summary"
             content = "This entry is empty. Please write something here!" if content.empty? 
             required_data.delete("content") {required_data}

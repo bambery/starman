@@ -14,6 +14,10 @@ describe MemcachedHelpers do
     end
 
     it 'adds the post to an empty cache' do
+      # double check the post is not in the cache
       app.settings.memcached.get(@test_post).should be_nil
+      (@get_misses+=1).should eq(TestFileHelpers.memcached_get_misses_count)
     end
+
+  end
 end

@@ -10,6 +10,7 @@ class Starman < Sinatra::Base
 
   register Sinatra::AssetPack
   helpers CachingHelpers 
+  helpers LogHelpers 
 
   configure do
     set :root, File.dirname(__FILE__)
@@ -47,17 +48,16 @@ class Starman < Sinatra::Base
   end
 
   get '/:section/:name/?' do
-    @post = get_or_add_post_to_cache(File.join(params[:section].downcase, params[:name].downcase))
-    pass if @post.nil? 
-    template = (params[:section].downcase + '_post').to_sym
-    haml template, :locals => {:post_content => markdown(@post.content)}
-  end
-
-# disable raise_errors and show_exceptions to access this route
-  error do
-#    logger.info "#{request.env['sinatra.error'].class.name}: #{request.env['sinatra.error'].message}\n #{request.env['sinatra.error'].backtrace.join('\n')}"
-
-    logger.info("#{request.env['sinatra.error'].class.name}: #{request.env['sinatra.error'].message}\n #{request.env['sinatra.error'].backtrace.join("\n")}")
+    begin 
+      @post = get_or_add_post_to_cache(File.join(params[:section].downcase, params[:name].downcase))
+    rescue StarmanError => e
+      add_error_to_log(e)
+      pass
+    else
+      pass if @post.nil? 
+      template = (params[:section].downcase + '_post').to_sym
+      haml template, :locals => {:post_content => markdown(@post.content)}
+    end
   end
 
 end

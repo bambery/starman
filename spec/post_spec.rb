@@ -26,12 +26,18 @@ describe Post, "#initialize" do
   end # end valid post name
 
   context 'invalid post name' do
-     it "fails with a post file that doesn't exist" do
-       expect {Post.new("fake/post")}.to raise_error(ArgumentError)
+     it "raises an exception with a post file that doesn't exist and assigns nil to content and metadata" do
+       expect {@test_post = Post.new("fake/post")}.to raise_error(ArgumentError)
+       expect(@test_post.content).to be_nil
+       expect(@test_post.metadata).to be_nil
      end
 
-     it 'fails with a post with a file extension' do
-       expect {Post.new("fake/post.mdown")}.to raise_error(NameError)
+     it 'raises an error with a post with a file extension and assigns basename, section, content, metadata to nil' do
+       expect {@test_post = Post.new("fake/post.mdown")}.to raise_error(ArgumentError)
+       expect @test_post.section.to be_nil
+       expect @test_post.basename.to be_nil
+       expect @test_post.content.to be_nil
+       expect @test_post.metadata.to be_nil
      end
 
      it "fails with a post missing a forward slash" do

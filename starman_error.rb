@@ -1,0 +1,2 @@
+class StarmanError < StandardError
+end
