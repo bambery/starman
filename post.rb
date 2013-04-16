@@ -18,9 +18,7 @@ class Post
     if /^\w+\/\w+$/ === @name 
       @name.split('/')
     else
-    # write this to log?
-    # raise ArgumentError, 'posts must be initialized with a name in the form [section]/[filename w/out ext]' 
-      return nil, nil
+     raise Starman::NameError
     end
   end
 
@@ -44,19 +42,16 @@ class Post
 
   def parse_file
     if ENV['POSTS_DIR'].nil?
-      # write to log
-      raise StarmanError, "You're not loading the config which contains the env vars."
+#      raise StarmanErrors::ConfigError, "The config which contains the env vars is not being loaded."
     elsif !Post.post_exists?(@name)
-      # write to log
-      raise StarmanError, "trying to create a post with the name #{@name} failed because this file does not exist on the system." 
+      raise Starman::FileNotFoundError.new(@name)
     end
 
     file_data = read_post_file 
     # TODO: better check for proper formatting
     # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
     if !file_data.include?("*-----*-----*")
-      #write to log
-      raise StarmanError, "A post must have the *-----*-----* divider between the metadata and the content." 
+      raise Starman::FormattingError.new(@name)
     end
     metadata_text, content = file_data.split("*-----*-----*")
     return parse_file_data(metadata_text.strip, content.strip)
@@ -86,7 +81,7 @@ class Post
           when "date"
             # TODO date format localization
             # TODO custom exception to capture improperly formatted dates and 404 on entry
-            raise StarmanError, "Posts must have a date defined on them: #{@name}" if value.strip.empty?
+            raise Starman::MissingDate.new(@name) if value.strip.empty?
             metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
             required_data.delete("date")
           when "summary"
@@ -106,7 +101,7 @@ class Post
         case item
           when "date"
             # TODO need a custom exception to handle this so app doesn't blow up on empty entries, should 404 instead
-            raise StarmanError, "Posts must have a date defined on them: #{@name}"
+            raise Starman::MissingDate.new(@name) 
           when "summary"
             content = "This entry is empty. Please write something here!" if content.empty? 
             required_data.delete("content") {required_data}

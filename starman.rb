@@ -6,26 +6,25 @@ require File.expand_path('post', File.dirname(__FILE__))
 require File.expand_path('helpers', File.dirname(__FILE__))
 require File.expand_path('starman_error', File.dirname(__FILE__))
 
-class Starman < Sinatra::Base
+module Starman
+class App < Sinatra::Base
 
   register Sinatra::AssetPack
-  helpers CachingHelpers 
-  helpers LogHelpers 
+  helpers Starman::CachingHelpers 
+  helpers Starman::LogHelpers 
 
-  configure do
+#  configure do
     set :root, File.dirname(__FILE__)
     set :memcached, Dalli::Client.new
     enable :logging
 #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
 #    log.sync = true
 #    use Rack::CommonLogger, log 
-  end
+#  end
 
-  configure :development do
-#    disable :dump_errors, :raise_errors, :show_exceptions
-    disable :dump_errors
-    disable :raise_errors, :show_exceptions
-  end
+#  configure :development do
+    disable :dump_errors, :raise_errors, :show_exceptions
+#  end
 
   # assetpack config
   assets do 
@@ -33,7 +32,7 @@ class Starman < Sinatra::Base
     bootstrap_dir = 'assets/css/bootstrap'
     serve '/css', :from => css_dir
 
-    Less.paths << File.join(Starman.root, css_dir) << File.join(Starman.root, bootstrap_dir)
+    Less.paths << File.join(App.root, css_dir) << File.join(App.root, bootstrap_dir)
 
     css :layout, [
       '/css/bootstrap/bootstrap.css', '/css/bootstrap/responsive.css',
@@ -60,4 +59,5 @@ class Starman < Sinatra::Base
     end
   end
 
+  end
 end
