@@ -1,10 +1,10 @@
-require 'sinatra/base'
 require 'sinatra/assetpack'
 require 'dalli'
 require 'less'
 
 require File.expand_path('post', File.dirname(__FILE__))
-require File.expand_path('helpers.rb', File.dirname(__FILE__))
+require File.expand_path('helpers', File.dirname(__FILE__))
+require File.expand_path('starman_error', File.dirname(__FILE__))
 
 class Starman < Sinatra::Base
 
@@ -15,10 +15,15 @@ class Starman < Sinatra::Base
     set :root, File.dirname(__FILE__)
     set :memcached, Dalli::Client.new
     enable :logging
+#    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
+#    log.sync = true
+#    use Rack::CommonLogger, log 
   end
 
   configure :development do
-    enable :dump_errors, :raise_errors, :show_exceptions
+#    disable :dump_errors, :raise_errors, :show_exceptions
+    disable :dump_errors
+    disable :raise_errors, :show_exceptions
   end
 
   # assetpack config
@@ -37,6 +42,7 @@ class Starman < Sinatra::Base
   end
 
   get '/' do
+    logger.info("foo")
     haml :index 
   end
 
@@ -45,6 +51,13 @@ class Starman < Sinatra::Base
     pass if @post.nil? 
     template = (params[:section].downcase + '_post').to_sym
     haml template, :locals => {:post_content => markdown(@post.content)}
+  end
+
+# disable raise_errors and show_exceptions to access this route
+  error do
+#    logger.info "#{request.env['sinatra.error'].class.name}: #{request.env['sinatra.error'].message}\n #{request.env['sinatra.error'].backtrace.join('\n')}"
+
+    logger.info("#{request.env['sinatra.error'].class.name}: #{request.env['sinatra.error'].message}\n #{request.env['sinatra.error'].backtrace.join("\n")}")
   end
 
 end
