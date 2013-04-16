@@ -6,38 +6,61 @@ class Post
 
   def initialize(post_name)
 
-    raise SystemCallError, "You're not loading the config which contains the env vars." if ENV['POSTS_DIR'].nil?
-
-    raise NameError, 'posts must be initialized with a name in the form [section]/[filename w/out ext]' unless /^\w+\/\w+$/ === post_name 
-
-    raise ArgumentError, "trying to create a post with the name #{post_name} failed because this file does not exist on the system." unless post_exists?(post_name)
     
     # the posts name is also its hash key - [section]/[file name without ext]
     @name = post_name
-    @section, @basename = post_name.split('/') 
+    @section, @basename = get_section_and_basename
     @metadata, @content = parse_file
 
   end
 
-  def ==(other)
-    if 
-      self.class == other.class &&
-      @name == other.name &&
-      @section == other.section &&
-      @basename == other.basename &&
-      @metadata == other.metadata &&
-      @content == other.content 
-      return true
+  def get_section_and_basename
+    if /^\w+\/\w+$/ === @name 
+      @name.split('/')
     else
-      return false
+    # write this to log?
+    # raise ArgumentError, 'posts must be initialized with a name in the form [section]/[filename w/out ext]' 
+      return nil, nil
     end
   end
 
+  def is_valid?
+    !(@name.nil? || @section.nil? || @basename.nil? || @metadata.nil? || @content.nil?)
+  end
+
+#  def ==(other)
+#    if 
+#      self.class == other.class &&
+#      @name == other.name &&
+#      @section == other.section &&
+#      @basename == other.basename &&
+#      @metadata == other.metadata &&
+#      @content == other.content 
+#      return true
+#    else
+#      return false
+#    end
+#  end
+
   def parse_file
+    if ENV['POSTS_DIR'].nil?
+      #write to log
+      #raise ArgumentError, "You're not loading the config which contains the env vars."
+      return nil, nil
+    elsif !Post.post_exists?(@name)
+      # write to log
+      #raise ArgumentError, "trying to create a post with the name #{@name} failed because this file does not exist on the system." 
+      return nil, nil
+    end
+
     file_data = read_post_file 
     # TODO: check for proper formatting
     # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
-    raise ArgumentError, "A post must have the *-----*-----* divider between the metadata and the content." if !file_data.include?("*-----*-----*")
+    if !file_data.include?("*-----*-----*")
+      #write to log
+      raise ArgumentError, "A post must have the *-----*-----* divider between the metadata and the content." 
+      return nil, nil
+    end
     metadata_text, content = file_data.split("*-----*-----*")
     return parse_file_data(metadata_text.strip, content.strip)
   end
@@ -47,7 +70,7 @@ class Post
     File.read(File.join(ENV['POSTS_DIR'], @name + ".mdown"))
   end
 
-  def post_exists?(post_name)
+  def self.post_exists?(post_name)
     # only markdown posts are allowed
     return File.exist?(File.join(ENV['POSTS_DIR'], post_name + ".mdown"))
   end

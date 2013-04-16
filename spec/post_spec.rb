@@ -7,7 +7,7 @@ describe Post, "#initialize" do
   context 'valid post name' do
 
     before(:each) do
-      Post.any_instance.stub(:post_exists?) { true }
+      Post.stub(:post_exists?) { true }
       Post.any_instance.stub(:read_post_file) { FactoryGirl.create(:post_data) }
       @test_post = Post.new("blog/goodbye_love")
     end
