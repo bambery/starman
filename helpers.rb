@@ -4,9 +4,9 @@ module Starman
       post = settings.memcached.get(post_path)
       if post.nil? 
         post = Post.new(post_path)
-        settings.memcached.set(post_path, post) if post.is_valid? 
+        settings.memcached.set(post_path, post) 
       end
-      post.is_valid? ? post : nil
+      return post
 
     end
 
