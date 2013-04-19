@@ -18,7 +18,7 @@ class Post
     if /^\w+\/\w+$/ === @name 
       @name.split('/')
     else
-     raise Starman::NameError
+     raise Starman::NameError.new(@name)
     end
   end
 
@@ -74,25 +74,27 @@ class Post
     required_data << "content" if content.empty?
     metadata_text.lines.each do |mdata_line|
       mdata_line.strip!
-      if is_metadata?(mdata_line)
-        #delimit on first colon 
-        key, value = mdata_line.split(/\s*:\s*/, 2)
-        case key.downcase
-          when "date"
-            # TODO date format localization
-            # TODO custom exception to capture improperly formatted dates and 404 on entry
-            raise Starman::MissingDate.new(@name) if value.strip.empty?
+      next if mdata_line.empty?
+      raise Starman::InvalidMetadata.new(@name, mdata_line) unless is_metadata?(mdata_line)
+      #delimit on first colon 
+      key, value = mdata_line.split(/\s*:\s*/, 2)
+      case key.downcase
+        when "date"
+          # TODO date format localization
+          # TODO custom exception to capture improperly formatted dates and 404 on entry
+          raise Starman::DateError.new(@name) if value.strip.empty?
+          begin
             metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
-            required_data.delete("date")
-          when "summary"
-            if !value.strip.empty?
-              metadata["summary"] = value[0..100].strip
-              required_data.delete("summary")
-            end
-        end #end case
-        # TODO this should probably be a warning in the log file
-      else p "not valid metadata in post #{@name}: \'#{mdata_line}\'"
-      end #end if
+          rescue ArgumentError
+            raise Starman::DateError.new(@name)
+          end
+          required_data.delete("date")
+        when "summary"
+          if !value.strip.empty?
+            metadata["summary"] = value[0..100].strip
+            required_data.delete("summary")
+          end
+      end #end case
     end # end do
       
     # handle missing required fields
@@ -101,7 +103,7 @@ class Post
         case item
           when "date"
             # TODO need a custom exception to handle this so app doesn't blow up on empty entries, should 404 instead
-            raise Starman::MissingDate.new(@name) 
+            raise Starman::DateError.new(@name) 
           when "summary"
             content = "This entry is empty. Please write something here!" if content.empty? 
             required_data.delete("content") {required_data}
@@ -117,7 +119,7 @@ class Post
 
   def is_metadata?(mdata_line)
     # metadata keywords must be named with letters, numbers, or underscores and separated from their values by a colon 
-    mdata_line.match(/^[\w]+:.*/)
+    mdata_line.match(/^\s*[\w]+\s*:.*/)
   end
 
   def date

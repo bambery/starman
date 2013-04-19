@@ -19,9 +19,21 @@ module Starman
     end
   end
 
-  class MissingDate < StarmanError
+  class DateError < StarmanError
     def message
-      "Posts must have a date defined on them: #{@name}"
+      "#{@name}: This post is either missing a date or it is improperly formatted."
+    end
+  end
+
+  class InvalidMetadata < StarmanError
+    attr :name, :mdata_line
+    def initialize(name, mdata_line) 
+      @name = name
+      @mdata_line = mdata_line
+    end
+
+    def message
+      "Invalid metadata in post #{@name}: #{@mdata_line}. Metadata must be in the form of KEYWORD: VALUE" 
     end
   end
 

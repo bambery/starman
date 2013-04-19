@@ -13,18 +13,15 @@ class App < Sinatra::Base
   helpers Starman::CachingHelpers 
   helpers Starman::LogHelpers 
 
-#  configure do
+  configure do
     set :root, File.dirname(__FILE__)
     set :memcached, Dalli::Client.new
     enable :logging
+    disable :dump_errors, :raise_errors, :show_exceptions
 #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
 #    log.sync = true
 #    use Rack::CommonLogger, log 
-#  end
-
-#  configure :development do
-    disable :dump_errors, :raise_errors, :show_exceptions
-#  end
+  end
 
   # assetpack config
   assets do 
