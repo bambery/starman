@@ -1,7 +1,5 @@
 require_relative 'spec_helper'
 require_relative '../post.rb'
-require 'factory_girl'
-FactoryGirl.find_definitions
 
 describe Post, "#initialize" do
   context 'valid post name' do

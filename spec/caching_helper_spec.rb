@@ -1,6 +1,4 @@
 require_relative './spec_helper'
-require 'factory_girl'
-FactoryGirl.find_definitions
 
 describe Starman do
   subject(:cachinghelpers) do
