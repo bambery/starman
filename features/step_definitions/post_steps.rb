@@ -1,8 +1,9 @@
 require_relative ('../../post.rb')
 
 Given(/^there is a post in section (\w+) named (\w+)$/) do |section, name|
-  Post.any_instance.should_receive(:post_exists?).and_return(true) 
-  Post.any_instance.should_receive(:read_post_file) {FactoryGirl.create(:post_data)}
+  Post.stub(:post_exists?).and_return(true) 
+  @post_content = FactoryGirl.create(:content)
+  Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data, content: @post_content)}
   @test_post = Post.new("#{section}/#{name}")
 end
 
@@ -11,5 +12,7 @@ When(/^I attempt to access the post$/) do
 end
 
 Then(/^I am shown the post$/) do
-  page.should have_content(@test_post.content)
+  @post_content_attributes = FactoryGirl.attributes_for(:content)
+  page.should have_content(@post_content_attributes["title"])
+  page.should have_content(@post_content_attributes["post_entry"])
 end

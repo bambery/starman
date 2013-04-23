@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'
+gem 'sinatra', "~> 1.4.2"
 gem 'thin'
 
 # I am lazy and I don't like closing tags or repeating styles
@@ -8,6 +8,7 @@ gem 'haml'
 gem 'less'
 gem 'therubyracer'
 gem 'sinatra-assetpack'
+gem 'redcarpet'
 
 # sinatra helpers
 gem 'sinatra-partial'

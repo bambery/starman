@@ -65,5 +65,15 @@ FactoryGirl.define do
     initialize_with { new("#{date_keyword} #{date} \n#{summary_keyword} #{summary} \n#{extras}\n#{divider}\n\n#{content}\n\n") }
   end
 
+  factory :content, class: String do
+    skip_create
+
+    markdown_h1 "#"
+    title "Best Post Ever"
+    post_entry "This is the entry to a terribly exciting post." 
+
+    initialize_with { new("\n#{markdown_h1}#{title}\n\n#{post_entry}") }
+
+  end
 
 end

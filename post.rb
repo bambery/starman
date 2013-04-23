@@ -22,23 +22,19 @@ class Post
     end
   end
 
-#  def is_valid?
-#    !(@name.nil? || @section.nil? || @basename.nil? || @metadata.nil? || @content.nil?)
-#  end
-
-#  def ==(other)
-#    if 
-#      self.class == other.class &&
-#      @name == other.name &&
-#      @section == other.section &&
-#      @basename == other.basename &&
-#      @metadata == other.metadata &&
-#      @content == other.content 
-#      return true
-#    else
-#      return false
-#    end
-#  end
+  def ==(other)
+    if 
+      self.class == other.class &&
+      @name == other.name &&
+      @section == other.section &&
+      @basename == other.basename &&
+      @metadata == other.metadata &&
+      @content == other.content 
+      return true
+    else
+      return false
+    end
+  end
 
   def parse_file
     if ENV['POSTS_DIR'].nil?

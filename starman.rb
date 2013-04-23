@@ -1,9 +1,11 @@
 require 'sinatra/assetpack'
 require 'dalli'
 require 'less'
+require 'redcarpet'
 
 require File.expand_path('post', File.dirname(__FILE__))
 require File.expand_path('helpers', File.dirname(__FILE__))
+require File.expand_path('view_helpers', File.dirname(__FILE__))
 require File.expand_path('starman_error', File.dirname(__FILE__))
 
 module Starman
@@ -12,12 +14,13 @@ class App < Sinatra::Base
   register Sinatra::AssetPack
   helpers Starman::CachingHelpers 
   helpers Starman::LogHelpers 
+  helpers Starman::PostHelpers
 
   configure do
     set :root, File.dirname(__FILE__)
     set :memcached, Dalli::Client.new
     enable :logging
-    disable :dump_errors, :raise_errors, :show_exceptions
+#    disable :dump_errors, :raise_errors, :show_exceptions
 #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
 #    log.sync = true
 #    use Rack::CommonLogger, log 
@@ -43,14 +46,14 @@ class App < Sinatra::Base
     haml :index 
   end
 
-  get '/:section/:name/?' do
+  get '/:section/:name.?:format?' do
     begin 
       @post = get_or_add_post_to_cache(File.join(params[:section].downcase, params[:name].downcase))
     rescue StarmanError => e
       add_error_to_log(e)
       pass
     else
-      pass if @post.nil? 
+  #    pass if @post.nil? 
       template = (params[:section].downcase + '_post').to_sym
       haml template, :locals => {:post_content => markdown(@post.content)}
     end

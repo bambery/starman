@@ -1,4 +1,4 @@
-ENV['ENV_RACK'] = 'test'
+ENV['RACK_ENV'] = 'test'
 
 require File.expand_path('../../config/boot', File.dirname(__FILE__))
 require 'factory_girl'
@@ -6,7 +6,7 @@ require 'capybara'
 require 'rspec'
 require 'cucumber/rspec/doubles'
 
-Capybara.app = Starman
+Capybara.app = Starman::App
 
 class StarmanWorld
   include Capybara::DSL
@@ -15,7 +15,7 @@ class StarmanWorld
   FactoryGirl.find_definitions
 
   def app
-    Starman
+    Starman::App
   end
 end
 
