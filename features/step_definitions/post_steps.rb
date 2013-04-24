@@ -28,16 +28,26 @@ Then(/^I am shown file not found$/) do
   #TODO test the page that was rendered to make sure it's the custom 404 page?
 end
 
-Given(/^a section named blog with posts named test(\d+), test(\d+), test(\d+)$/) do |arg1, arg2, arg3|
-    pending # express the regexp above with the code you wish you had
+Given(/^a section named (\w+) with 3 posts$/) do |section|
+  # there is a content factory for each item in the array, call it when creating and save a copy of the post in an instance variable with the same item name
+  @section = section
+  Post.stub(:post_exists?).and_return(true) 
+  @section_posts = [ "best_post", "second_best", "ok_post" ] 
+  @section_posts.each do |post_name|
+    Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data, post_name.to_sym)}
+    instance_variable_set("@#{post_name}", Post.new("#{section}/#{post_name}"))
+  end
 end
 
 When(/^I visit the section's index$/) do
-    pending # express the regexp above with the code you wish you had
+  visit("/" + @section) 
 end
 
-Then(/^I am provided links to the section's entries$/) do
-    pending # express the regexp above with the code you wish you had
+Then(/^I am provided links to the section's entries and their summaries$/) do
+  @section_posts.each do |post_name|
+    has_link?(instance_variable_get("@#{post_name}").name).should be_true
+    has_text?(instance_variable_get("@#{post_name}").summary).should be_true
+  end
 end
 
 Given(/^there is not a section named foo$/) do

@@ -62,6 +62,24 @@ FactoryGirl.define do
         divider nil
       end
 
+      trait :best_post do
+        content { FactoryGirl.create(:content) }
+        summary "The best post needs no summary"
+        date "01/10/2001"
+      end
+
+      trait :second_best do 
+        content { FactoryGirl.create(:content, :second_best) }
+        summary "Read more about the second best post"
+        date "02/20/2012"
+      end
+
+      trait :ok_post do
+        content { FactoryGirl.create(:content, :only_ok) }
+        summary "a post like any other"
+        date "04/14/2013"
+      end
+
     initialize_with { new("#{date_keyword} #{date} \n#{summary_keyword} #{summary} \n#{extras}\n#{divider}\n\n#{content}\n\n") }
   end
 
@@ -71,6 +89,17 @@ FactoryGirl.define do
     markdown_h1 "#"
     title "Best Post Ever"
     post_entry "This is the entry to a terribly exciting post." 
+    
+    trait :second_best do
+      title "This Post Is Second Best"
+      post_entry "Second best is ok, too." 
+    end
+
+    trait :only_ok do
+      title "This Post Is Only OK."
+      post_entry "Well, it's still a post, I guess" 
+    end
+
 
     initialize_with { new("\n#{markdown_h1}#{title}\n\n#{post_entry}") }
 

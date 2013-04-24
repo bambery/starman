@@ -14,7 +14,7 @@ Feature: View posts
     Then I am shown file not found 
 
   Scenario: View index for a section
-    Given a section named blog with posts named test1, test2, test3
+    Given a section named blog with 3 posts
     When I visit the section's index
     Then I am provided links to the section's entries
 

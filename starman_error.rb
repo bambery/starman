@@ -7,6 +7,18 @@ module Starman
     end
   end
 
+  class SectionNotFound < StarmanError
+    def message
+      "A section with the name of #{@name} does not exist on the file system."
+    end
+  end
+
+  class SectionEmpty < StarmanError
+    def message
+      "Section #{@name} contains no posts."
+    end
+  end
+
   class FileNotFoundError < StarmanError
     def message
       "Trying to create a post with the name #{@name} failed because this file does not exist on the system."
