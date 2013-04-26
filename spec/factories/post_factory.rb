@@ -105,4 +105,16 @@ FactoryGirl.define do
 
   end
 
+  factory :section_posts, class: Array do
+    skip_create
+
+    trait :blog do 
+      p1 { FactoryGirl.create(:post, :best_post) }
+      p2 { FactoryGirl.create(:post, :second_best) }
+      p3 { FactoryGirl.create(:post, :only_ok) }
+    end
+
+    initialize_with { new([p1.name, p2.name, p3.name]) }
+  end
+
 end

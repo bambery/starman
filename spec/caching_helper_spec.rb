@@ -95,7 +95,9 @@ describe Starman do
 
         it 'adds a section to the cache' do
           @section_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
+          expect(Section).to receive(:new)
           expect(app.settings.memcached.get("blog")).to eq(@section_posts)
+
           #check counts
         end
 

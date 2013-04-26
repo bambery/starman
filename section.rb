@@ -1,6 +1,5 @@
 class Section
-  attr_reader :name
-  attr_accessor :posts
+  attr_reader :name, :posts
 
   def initialize(name)
     @name = name
