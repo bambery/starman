@@ -57,6 +57,10 @@ describe Post, "#initialize" do
     it 'has content' do
       expect(@test_post.content).to eq(@test_attributes[:content])
     end
+     
+    it 'has a title' do
+      expect(@test_post.title).to eq(@test_attributes[:title])
+    end
 
   end # end parsing valid post file
 
@@ -84,6 +88,11 @@ describe Post, "#initialize" do
     it 'generates default content when missing content' do
       Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data, :no_content)}
       expect(Post.new("phone/someone").content).to eq("This entry is empty. Please write something here!")
+    end
+
+    it 'generates default title when missing title' do
+      Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data, :no_title)}
+      expect(Post.new("phone/someone_who").title).to eq("someone who")
     end
 
     it 'fails when it has a date keyword but no date' do

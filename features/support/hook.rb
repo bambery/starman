@@ -1,3 +1,3 @@
 Before do
-  app.settings.memecached.flush
+  app.settings.memcached.flush
 end

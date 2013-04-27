@@ -66,7 +66,7 @@ class Post
   def parse_file_data(metadata_text, content)
     # parses date and entry summary, discards any extra metadata
     metadata = Hash.new
-    required_data = ["date", "summary"]
+    required_data = ["date", "summary", "title"]
     required_data << "content" if content.empty?
     metadata_text.lines.each do |mdata_line|
       mdata_line.strip!
@@ -77,7 +77,6 @@ class Post
       case key.downcase
         when "date"
           # TODO date format localization
-          # TODO custom exception to capture improperly formatted dates and 404 on entry
           raise Starman::DateError.new(@name) if value.strip.empty?
           begin
             metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
@@ -90,28 +89,38 @@ class Post
             metadata["summary"] = value[0..100].strip
             required_data.delete("summary")
           end
+        when "title"
+          if !value.strip.empty?
+            metadata["title"] = value[0..40]
+            required_data.delete("title")
+          end
       end #end case
     end # end do
-      
-    # handle missing required fields
-    if !required_data.empty?
-      required_data.each do |item|
-        case item
-          when "date"
-            # TODO need a custom exception to handle this so app doesn't blow up on empty entries, should 404 instead
-            raise Starman::DateError.new(@name) 
-          when "summary"
-            content = "This entry is empty. Please write something here!" if content.empty? 
-            required_data.delete("content") {required_data}
-            metadata["summary"] = content[0..100].strip 
-          when "content"
-            content = "This entry is empty. Please write something here!" if content.empty? 
-        end # end case
-      end # end do
-    end # end if
+
+    metadata, content = populate_missing_fields(required_data, metadata, content) if !required_data.empty?
 
     return metadata, content
   end
+
+    def populate_missing_fields(required_data, metadata, content)
+      required_data.each do |item|
+        case item
+          when "date"
+            # a post must have a date
+            raise Starman::DateError.new(@name) 
+          when "summary"
+            content = "This entry is empty. Please write something here!" if content.empty? 
+            required_data.delete("content") 
+            metadata["summary"] = content[0..100].strip 
+          when "content"
+            content = "This entry is empty. Please write something here!" if content.empty? 
+          when "title"
+            metadata["title"] = @basename.gsub("_", " ") 
+        end # end case
+      end # end do
+      return metadata, content
+    end
+
 
   def is_metadata?(mdata_line)
     # metadata keywords must be named with letters, numbers, or underscores and separated from their values by a colon 
@@ -124,6 +133,10 @@ class Post
 
   def summary
     metadata["summary"]
+  end
+
+  def title
+    metadata["title"]
   end
 
 end

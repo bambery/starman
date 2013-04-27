@@ -6,6 +6,7 @@ FactoryGirl.define do
     skip_create
     
       date "04/11/2013"
+      title "A magnificent post!"
       summary "a foo bar baz"
       divider "*-----*-----*"
       content "#Test Post Foo\n\nHere's some content for ya guv!"
@@ -14,6 +15,7 @@ FactoryGirl.define do
       ignore do
         summary_keyword "Summary:"
         date_keyword "Date:"
+        title_keyword "Title:"
       end
 
       trait :no_date_keyword do
@@ -44,6 +46,10 @@ FactoryGirl.define do
 
       trait :bad_date do
         date "abcd"
+      end
+       
+      trait :no_title do
+        title nil
       end
 
       trait :extra_metadata do
@@ -92,7 +98,7 @@ FactoryGirl.define do
         date "03/10/2010"
       end
 
-    initialize_with { new("#{date_keyword} #{date} \n#{summary_keyword} #{summary} \n#{extras}\n#{divider}\n\n#{content}\n\n") }
+    initialize_with { new("#{date_keyword} #{date} \n#{title_keyword} #{title} \n#{summary_keyword} #{summary} \n#{extras}\n#{divider}\n\n#{content}\n\n") }
   end
 
   factory :content, class: String do
