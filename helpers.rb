@@ -15,7 +15,9 @@ module Starman
         new_sec = Section.new(section)
         sort_posts_by_date_and_add_to_cache!(new_sec)
         settings.memcached.set(new_sec.name, new_sec.posts)
+        section_posts = new_sec.posts
       end
+      return section_posts
     end
 
     def sort_posts_by_date_and_add_to_cache!(section)

@@ -93,12 +93,11 @@ describe Starman do
         end
 
         it 'adds a section to the cache', :meow => true do
-          create_and_add_section_posts_to_cache("blog", ["best_post", "second_best", "ok_post"])
-#          @section_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
-#          expect(Section).to receive(:new)
-#          expect(app.settings.memcached.get("blog")).to eq(@section_posts)
+          @section = "blog"
+          Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
+          @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
+          expect(app.settings.memcached.get(@section)).to eq(@section_posts)
 
-          #check counts
         end
 
         it 'sorts the section posts by date' do
