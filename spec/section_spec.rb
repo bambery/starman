@@ -19,6 +19,9 @@ describe Section, "#initialize" do
     end
 
     it 'excludes any dotfiles in the posts listing' do
+      Dir.stub(:entries) { ["p1", ".badfile", "p2", "p3", ".postfile"] }
+      @blog = Section.new("blog")
+      expect(@blog.posts).to eq(["blog/p1", "blog/p2", "blog/p3"])
     end
   end # end section exists
 

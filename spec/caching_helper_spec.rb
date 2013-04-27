@@ -90,13 +90,13 @@ describe Starman do
           @get_hits= app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i
           @set_count= app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i
 
-          Section.any_instance.stub(:find_posts) {FactoryGirl.create(:section_posts, :blog)}
         end
 
-        it 'adds a section to the cache' do
-          @section_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
-          expect(Section).to receive(:new)
-          expect(app.settings.memcached.get("blog")).to eq(@section_posts)
+        it 'adds a section to the cache', :meow => true do
+          create_and_add_section_posts_to_cache("blog", ["best_post", "second_best", "ok_post"])
+#          @section_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
+#          expect(Section).to receive(:new)
+#          expect(app.settings.memcached.get("blog")).to eq(@section_posts)
 
           #check counts
         end
