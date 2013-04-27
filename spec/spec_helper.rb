@@ -16,7 +16,7 @@ end
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
-  config.include SectionHelpers
+  config.include SectionTestHelpers
   FactoryGirl.find_definitions
 end
 

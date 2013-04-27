@@ -62,7 +62,7 @@ FactoryGirl.define do
         divider nil
       end
 
-      trait :best_post do
+      trait :best_post  do
         content { FactoryGirl.create(:content) }
         summary "The best post needs no summary"
         date "01/10/2001"
@@ -78,6 +78,18 @@ FactoryGirl.define do
         content { FactoryGirl.create(:content, :only_ok) }
         summary "a post like any other"
         date "04/14/2013"
+      end
+
+      trait :earliest do
+        date "01/10/2001"
+      end
+
+      trait :most_recent do
+        date "04/10/2013"
+      end
+
+      trait :middle do
+        date "03/10/2010"
       end
 
     initialize_with { new("#{date_keyword} #{date} \n#{summary_keyword} #{summary} \n#{extras}\n#{divider}\n\n#{content}\n\n") }

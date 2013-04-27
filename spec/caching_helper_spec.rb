@@ -79,44 +79,65 @@ describe Starman do
       end
 
     end # end context
+  end # post helpers
 
-    context 'section helpers', :section => true do
-      context 'the cache is empty' do
-        before(:each) do
-          @test_memcached_server = ENV['TEST_MEMCACHED_SERVER']
+  context 'section helpers', :section => true do
+    context 'the cache is empty' do
+      before(:each) do
+        @test_memcached_server = ENV['TEST_MEMCACHED_SERVER']
 
-          app.settings.memcached.flush
-          @get_misses = app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i
-          @get_hits= app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i
-          @set_count= app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i
-
-        end
-
-        it 'adds a section to the cache', :meow => true do
-          @section = "blog"
-          Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
-          @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
-          expect(app.settings.memcached.get(@section)).to eq(@section_posts)
-
-        end
-
-        it 'sorts the section posts by date' do
-          @sorted_posts = FactoryGirl.create(:section_posts, :blog, :sorted)
-          @section_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
-          expect(@sorted_posts).to eq(@sorted_posts)
-        end
-
-        it 'creates a new section' do
-          @section_double = Section.new("blog")
-          @section_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
-          expect(@section_double.posts - @section_posts).to be_empty 
-        end
+        app.settings.memcached.flush
+        @get_misses = app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i
+        @get_hits= app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i
+        @set_count= app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i
 
       end
 
-  #    it 'ignores filenames beginning with a period (such as swp)', :section => true do
-        #stub dir.entries and then do a new section and check for .swp files
-  #    end
-    end
-  end
+      it 'adds a section to the cache' do
+        @section = "blog"
+        Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
+        @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
+        expect(app.settings.memcached.get(@section)).to eq(@section_posts)
+      end
+
+      it 'sorts the section posts by date' do
+        @section = "blog"
+        Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["earliest", "most_recent", "middle"])}
+        @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
+        expect(@section_posts).to eq(["blog/most_recent", "blog/middle", "blog/earliest"])
+      end
+
+      it 'creates a new section' do
+        @section = "blog"
+        Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
+        @section_double = Section.new(@section)
+        @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
+        expect(@section_double.posts - @section_posts).to be_empty 
+      end
+    end # empty cache context
+
+    context 'the section is in the cache' do
+      before(:each) do
+        @test_memcached_server = ENV['TEST_MEMCACHED_SERVER']
+        app.settings.memcached.flush
+
+        @section = "blog"
+        Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
+        @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
+
+        @get_misses = app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i
+        @get_hits= app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i
+        @set_count= app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i
+
+      end
+    
+      it 'retrieves the section from the cache' do
+        @blog_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
+        @get_misses.should eq(app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i)
+        @set_count.should eq(app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i)
+        (@get_hits+1).should eq(app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i)
+      end
+
+    end # end primed cache context
+  end # end section cache helpers
 end
