@@ -2,7 +2,7 @@ ENV['RACK_ENV'] = 'test'
 
 require File.expand_path('../../config/boot', File.dirname(__FILE__))
 require 'factory_girl'
-require 'capybara'
+require 'capybara/cucumber'
 require 'rspec'
 require 'cucumber/rspec/doubles'
 

@@ -28,22 +28,30 @@ Then(/^I am shown file not found$/) do
   #TODO test the page that was rendered to make sure it's the custom 404 page?
 end
 
-Given(/^a section named (\w+) with 3 posts$/) do |section|
+Given(/^a section named (\w+) with posts ([\w\,\s]+)$/) do |section, name_list|
   @section = section
-  create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])
+  post_names_list = name_list.split(", ")
+  @section_post_names = post_names_list.dup 
+  Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, post_names_list) }
 end
 
 When(/^I visit the section's index$/) do
   visit("/" + @section) 
 end
 
-Then(/^I am provided links to the section's entries and their summaries$/) do
-  @section_posts.each do |post_name|
+Then(/^I am provided links to the section's entries$/) do
+  @section_post_names.each do |post_name|
     has_link?(instance_variable_get("@#{post_name}").title).should be_true
+  end
+end
+
+Then(/^I am provided with their summaries$/) do
+  @section_post_names.each do |post_name|
     has_text?(instance_variable_get("@#{post_name}").summary).should be_true
   end
 end
 
-Given(/^there is not a section named foo$/) do
-    pending # express the regexp above with the code you wish you had
+Given(/^there is not a section named (\w+)$/) do |section|
+  @section = section 
+  expect(Section.section_exists?("#{@section}")).to be_false 
 end

@@ -14,9 +14,10 @@ Feature: View posts
     Then I am shown file not found 
 
   Scenario: View index for a section
-    Given a section named blog with 3 posts
+    Given a section named blog with posts best_post, second_best, ok_post
     When I visit the section's index
-    Then I am provided links to the section's entries
+    Then I am provided links to the section's entries 
+    And I am provided with their summaries
 
   Scenario: Attempt to view an indec for a section that does not exist
     Given there is not a section named foo
