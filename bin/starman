@@ -32,7 +32,12 @@ then
       echo "a post already exists in section $2 with the name $4"
     else
       echo "creating new $2 post named $4"
-      vim "$content_dir/$2/$4.mdown" -c "r $app_root/config/$2_post_template.txt" -c "echo \"New post template created, please hit enter\""
+      if [ -e "$app_root/config/$2_post_template.txt" ]
+      then 
+        vim "$content_dir/$2/$4.mdown" -c "r $app_root/config/$2_post_template.txt" -c "echo \"New post template created, please hit enter\""
+      else 
+        vim "$content_dir/$2/$4.mdown" -c "r $app_root/config/standard_post_template.txt" -c "echo \"New post template created, please hit enter\""
+      fi
     fi
   else 
     echo "ERROR: a section with the name $2 does not exist - please create it first"

@@ -1,0 +1,10 @@
+Date: 04/30/2013
+Title: Building 3d models of truncated irregular pyramids 
+Summary: Recently I found myself needing to sculpt a gem, and decided to write a small program to handle it for me. 
+
+*-----*-----*
+
+# Building 3D models of Truncated Irregular Hexogonal Pyramids
+
+Using only the power of the pythagorean theorem, I dredged up the Geometry I memories of computing solids and built myself a model.
+
