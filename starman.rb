@@ -30,20 +30,18 @@ module Starman
     # assetpack config
     assets do 
       css_dir = 'assets/css'
-      bootstrap_dir = 'assets/css/bootstrap'
+      img_dir = 'assets/images'
       serve '/css', :from => css_dir
+      serve '/images', :from => img_dir 
 
-      Less.paths << File.join(App.root, css_dir) << File.join(App.root, bootstrap_dir)
 
       css :layout, [
-        '/css/bootstrap/bootstrap.css', '/css/bootstrap/responsive.css',
         '/css/layout.css'
       ]
-      css_compression :less
+      css_compression :sass
     end
 
     get '/' do
-      logger.info("foo")
       haml :index 
     end
 
