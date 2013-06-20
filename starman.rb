@@ -1,4 +1,3 @@
-require 'sinatra/assetpack'
 require 'dalli'
 require 'sass'
 require 'redcarpet'
@@ -12,7 +11,6 @@ require File.expand_path('starman_error', File.dirname(__FILE__))
 module Starman
   class App < Sinatra::Base
 
-    register Sinatra::AssetPack
     helpers Starman::CachingHelpers 
     helpers Starman::LogHelpers 
     helpers Starman::PostHelpers
@@ -33,6 +31,10 @@ module Starman
 
     get '/' do
       haml :index 
+    end
+
+    get '/section' do
+      haml :section
     end
 
     get '/:section/:name.?:format?' do
