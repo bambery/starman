@@ -1,6 +1,6 @@
 require 'sinatra/assetpack'
 require 'dalli'
-require 'less'
+require 'sass'
 require 'redcarpet'
 
 require File.expand_path('post', File.dirname(__FILE__))
@@ -27,18 +27,8 @@ module Starman
   #    use Rack::CommonLogger, log 
     end
 
-    # assetpack config
-    assets do 
-      css_dir = 'assets/css'
-      img_dir = 'assets/images'
-      serve '/css', :from => css_dir
-      serve '/images', :from => img_dir 
-
-
-      css :layout, [
-        '/css/layout.css'
-      ]
-      css_compression :sass
+    get '/stylesheets/:name.css' do 
+      scss params[:name].to_sym, :views => "#{settings.root}/assets/css"
     end
 
     get '/' do
