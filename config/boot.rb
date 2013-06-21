@@ -17,6 +17,6 @@ require File.expand_path('starman', root_dir)
 
 ENV['POSTS_DIR'] = 'content'
 
-#ENV['TEST_MEMCACHED_SERVER'] = '127.0.0.1:11211'
+ENV['TEST_MEMCACHED_SERVER'] = '127.0.0.1:11211'
 
 
