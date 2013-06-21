@@ -6,7 +6,7 @@ gem 'thin'
 
 # I am lazy and I don't like closing tags or repeating styles
 gem 'haml'
-gem 'less'
+gem 'sass'
 gem 'therubyracer'
 gem 'sinatra-assetpack'
 gem 'redcarpet'
@@ -15,6 +15,7 @@ gem 'redcarpet'
 gem 'sinatra-partial'
 
 # memcached
+gem 'memcachier'
 gem 'dalli'
 gem 'kgio'
 

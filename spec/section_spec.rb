@@ -3,7 +3,7 @@ require_relative 'spec_helper'
 describe Section, "#initialize" do
   context 'section exists' do
     before(:each) do
-      Section.any_instance.stub(:section_exists?) { true }
+      Section.any_instance.stub(:exists?) { true }
     end
     
     it 'assigns the name' do

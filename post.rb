@@ -39,7 +39,7 @@ class Post
   def parse_file
     if ENV['POSTS_DIR'].nil?
 #      raise StarmanErrors::ConfigError, "The config which contains the env vars is not being loaded."
-    elsif !Post.post_exists?(@name)
+    elsif !Post.exists?(@name)
       raise Starman::FileNotFoundError.new(@name)
     end
 
@@ -58,7 +58,7 @@ class Post
     File.read(File.join(ENV['POSTS_DIR'], @name + ".mdown"))
   end
 
-  def self.post_exists?(post_name)
+  def self.exists?(post_name)
     # only markdown posts are allowed
     return File.exist?(File.join(ENV['POSTS_DIR'], post_name + ".mdown"))
   end

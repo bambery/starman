@@ -1,6 +1,6 @@
-require 'sinatra/assetpack'
+require 'memcachier'
 require 'dalli'
-require 'less'
+require 'sass'
 require 'redcarpet'
 
 require File.expand_path('post', File.dirname(__FILE__))
@@ -12,7 +12,6 @@ require File.expand_path('starman_error', File.dirname(__FILE__))
 module Starman
   class App < Sinatra::Base
 
-    register Sinatra::AssetPack
     helpers Starman::CachingHelpers 
     helpers Starman::LogHelpers 
     helpers Starman::PostHelpers
@@ -25,26 +24,30 @@ module Starman
   #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
   #    log.sync = true
   #    use Rack::CommonLogger, log 
+      
     end
 
-    # assetpack config
-    assets do 
-      css_dir = 'assets/css'
-      bootstrap_dir = 'assets/css/bootstrap'
-      serve '/css', :from => css_dir
+    configure :production do
+      require 'sass/plugin/rack'
+      use Sass::Plugin::Rack
+      Sass::Plugin.options[:style] = :compressed
+    end
 
-      Less.paths << File.join(App.root, css_dir) << File.join(App.root, bootstrap_dir)
-
-      css :layout, [
-        '/css/bootstrap/bootstrap.css', '/css/bootstrap/responsive.css',
-        '/css/layout.css'
-      ]
-      css_compression :less
+    get '/stylesheets/:name.css' do 
+      if settings.production?
+        #grab the precompiled css from s3 
+        send_file File.expand_path(params[:name] + ".css", amz_url)
+      else
+        scss params[:name].to_sym, :views => "#{settings.root}/assets/css"
+      end
     end
 
     get '/' do
-      logger.info("foo")
       haml :index 
+    end
+
+    get '/section' do
+      haml :section
     end
 
     get '/:section/:name.?:format?' do

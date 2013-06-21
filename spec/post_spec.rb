@@ -5,7 +5,7 @@ describe Post, "#initialize" do
   context 'valid post name' do
 
     before(:each) do
-      Post.stub(:post_exists?) { true }
+      Post.stub(:exists?) { true }
       Post.any_instance.stub(:read_post_file) { FactoryGirl.create(:post_data) }
       @test_post = Post.new("blog/goodbye_love")
     end
@@ -39,7 +39,7 @@ describe Post, "#initialize" do
 
   context 'parsing valid post file' do
     before(:each) do 
-      Post.stub(:post_exists?) {true}
+      Post.stub(:exists?) {true}
       Post.any_instance.stub(:read_post_file) { FactoryGirl.create(:post_data) }
 
       @test_post = Post.new("rocknroll/cat")
@@ -66,7 +66,7 @@ describe Post, "#initialize" do
 
   context 'parsing invalid post file' do
     before(:each) do
-      Post.stub(:post_exists?) {true}
+      Post.stub(:exists?) {true}
     end
 
     it 'fails with missing date keyword' do

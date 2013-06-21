@@ -1,4 +1,5 @@
 module Starman
+  # cache expirations only happen after a push, and are handled in PostReleaseHooks rather than here
   module CachingHelpers 
     def get_or_add_post_to_cache(post_path)
       post = settings.memcached.get(post_path)

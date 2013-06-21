@@ -24,7 +24,7 @@ describe Starman do
       end
 
       it 'creates a new post' do
-        Post.stub(:post_exists?) {true}
+        Post.stub(:exists?) {true}
         Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data)}
 
         @post_double = Post.new("real/post")
@@ -34,7 +34,7 @@ describe Starman do
       end
 
       it 'adds a post to an empty cache' do
-        Post.stub(:post_exists?) {true}
+        Post.stub(:exists?) {true}
         Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data)}
 
         @post = cachinghelpers.new.get_or_add_post_to_cache("real/post")
@@ -61,7 +61,7 @@ describe Starman do
       before(:each) do
         @test_memcached_server = ENV['TEST_MEMCACHED_SERVER']
         app.settings.memcached.flush
-        Post.stub(:post_exists?) {true}
+        Post.stub(:exists?) {true}
         Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data)}
         @post = cachinghelpers.new.get_or_add_post_to_cache("real/post")
 

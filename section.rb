@@ -8,7 +8,7 @@ class Section
   end
 
   def find_posts
-    raise Starman::SectionNotFound.new(@name) unless Section.section_exists?(@name)
+    raise Starman::SectionNotFound.new(@name) unless Section.exists?(@name)
     # exclude any dotfiles
     posts = Dir.entries(File.join(ENV['POSTS_DIR'], @name)).delete_if {|i| i =~ /^\./} 
     if posts.size == 0 then raise Starman::SectionEmpty.new(@name) end 
@@ -17,8 +17,12 @@ class Section
     return posts
   end
 
-  def self.section_exists?(section)
+  def self.exists?(section)
     return Dir.exists?(File.join(ENV['POSTS_DIR'], section))
+  end
+
+  def self.mtime(section)
+    return File.mtime(File.join(ENV['POSTS_DIR'], section))
   end
 
 end

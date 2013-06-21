@@ -1,7 +1,7 @@
 require_relative ('../../post.rb')
 
 Given(/^there is a post in section (\w+) named (\w+)$/) do |section, name|
-  Post.stub(:post_exists?).and_return(true) 
+  Post.stub(:exists?).and_return(true) 
   @post_content = FactoryGirl.create(:content)
   Post.any_instance.stub(:read_post_file) {FactoryGirl.create(:post_data, content: @post_content)}
   @test_post_name = "#{section}/#{name}"
@@ -20,7 +20,7 @@ end
 
 Given(/^there is not a post in section (\w+) named (\w+)$/) do |section, name|
   @test_post_name = "#{section}/#{name}"
-  expect(Post.post_exists?("#{@test_post_name}")).to be_false 
+  expect(Post.exists?("#{@test_post_name}")).to be_false 
 end
 
 Then(/^I am shown file not found$/) do
@@ -53,5 +53,5 @@ end
 
 Given(/^there is not a section named (\w+)$/) do |section|
   @section = section 
-  expect(Section.section_exists?("#{@section}")).to be_false 
+  expect(Section.exists?("#{@section}")).to be_false 
 end
