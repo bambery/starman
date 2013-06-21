@@ -15,6 +15,7 @@ gem 'redcarpet'
 gem 'sinatra-partial'
 
 # memcached
+gem 'memcachier'
 gem 'dalli'
 gem 'kgio'
 

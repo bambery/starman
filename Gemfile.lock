@@ -31,6 +31,7 @@ GEM
     jsmin (1.0.1)
     kgio (2.8.0)
     libv8 (3.11.8.17)
+    memcachier (0.0.2)
     mime-types (1.23)
     multi_json (1.7.2)
     nokogiri (1.5.9)
@@ -85,6 +86,7 @@ DEPENDENCIES
   factory_girl
   haml
   kgio
+  memcachier
   redcarpet
   rspec
   sass
