@@ -2,12 +2,14 @@ require 'rubygems'
 require 'bundler'
 require 'sinatra/base'
 require 'date'
+#require 'sprockets'
 
 Bundler.setup
 
 root_dir = File.expand_path('..', File.dirname(__FILE__))
 require File.expand_path('starman', root_dir)
- 
+#environvment = Sprockets::Environment.new
+#environment.append_path 'assets/css/sass/'
 
 #if ENV['RACK_ENV'] != "test" 
 #  log = File.new("#{root_dir}/log/starman-#{ENV['RACK_ENV']}-#{Date.today.month}-#{Date.today.day}-#{Date.today.year}.log", "a+")

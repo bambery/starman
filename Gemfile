@@ -4,12 +4,14 @@ ruby "1.9.3"
 gem 'sinatra', "~> 1.4.2"
 gem 'thin'
 
-# I am lazy and I don't like closing tags or repeating styles
-gem 'haml'
-gem 'sass'
-gem 'therubyracer'
-gem 'sinatra-assetpack'
-gem 'redcarpet'
+group :assets do 
+  gem 'sprockets'
+  gem 'asset_sync'
+  gem 'haml'
+  gem 'sass'
+  gem 'therubyracer'
+  gem 'redcarpet'
+end
 
 # sinatra helpers
 gem 'sinatra-partial'
@@ -18,6 +20,8 @@ gem 'sinatra-partial'
 gem 'memcachier'
 gem 'dalli'
 gem 'kgio'
+
+gem 'rake'
 
 group :test, :development do
   gem 'cucumber'

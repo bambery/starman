@@ -24,13 +24,7 @@ module Starman
   #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
   #    log.sync = true
   #    use Rack::CommonLogger, log 
-      
-    end
 
-    configure :production do
-      require 'sass/plugin/rack'
-      use Sass::Plugin::Rack
-      Sass::Plugin.options[:style] = :compressed
     end
 
     get '/stylesheets/:name.css' do 
@@ -38,7 +32,7 @@ module Starman
         #grab the precompiled css from s3 
         send_file File.expand_path(params[:name] + ".css", amz_url)
       else
-        scss params[:name].to_sym, :views => "#{settings.root}/assets/css"
+        scss params[:name].to_sym, :views => "#{settings.root}/assets/css/sass", :style => :compressed
       end
     end
 
