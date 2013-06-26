@@ -2,6 +2,7 @@ require 'rspec/core/rake_task'
 require 'rake'
 require 'asset_sync'
 require 'sass/plugin/rack'
+require_relative 'config/dev-aw3-config'
 
 RSpec::Core::RakeTask.new
 
@@ -10,6 +11,7 @@ task :test => :spec
 
 AssetSync.configure do |config|
   config.fog_provider = 'AWS'
+  config.fog_region = 'us-west-2'
   config.fog_directory = ENV['FOG_DIRECTORY']
   config.aws_access_key_id = ENV['AWS_ACCESS_KEY_ID']
   config.aws_secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
@@ -29,7 +31,7 @@ namespace :assets do
     Sass::Plugin.update_stylesheets
 
     # upload to S3
-#    AssetSync.sync
+    AssetSync.sync
   end
 end
 
