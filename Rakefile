@@ -1,4 +1,5 @@
 require 'rake'
+require 'pathname'
 require 'asset_sync'
 require 'sass/plugin/rack'
 
@@ -25,15 +26,14 @@ namespace :assets do
   desc 'Precompile assets and upload to S3'
   task :precompile do 
 
-    # compile sass and store the css in assets/css if they have been changed since the last compilation 
+    # compile sass and store the css in public/assets/css if they have been changed since the last compilation 
     Sass::Plugin.options[:cache] = :false
     Sass::Plugin.options[:style] = :compressed
-    Sass::Plugin.options[:template_location] = "#{File.dirname(__FILE__)}/assets/css/sass"
-#    Sass::Plugin.options[ :css_location ] = "#{File.dirname(__FILE__)}/assets/css"
-    Sass::Plugin.options[ :css_location ] = "./public"
+    Sass::Plugin.options[:template_location] = "#{File.dirname(__FILE__)}/assets/css"
+    Sass::Plugin.options[ :css_location ] = "./public/assets/css"
     Sass::Plugin.update_stylesheets
 
-    # upload to S3
+    # upload any changed files to S3
     AssetSync.sync
   end
 end

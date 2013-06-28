@@ -24,11 +24,19 @@ module Starman
   #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
   #    log.sync = true
   #    use Rack::CommonLogger, log 
-      set :scss, :views => "#{settings.root}/assets/css/sass", :css_location => "#{settings.root}/assets/css", :style => :compressed
+      #    look for sass in assets/css, and compile it into css in public/assets/css
+      set :scss, :views => "#{settings.root}/assets/css"
+    end
+    
+    configure :development, :test do
       disable :use_s3 
     end
 
-    get '/stylesheets/:name.css' do 
+    configure :production do
+      enable :use_s3 
+    end
+
+    get '/css/:name.css' do 
       if settings.use_s3?
         #grab the precompiled css from s3 
         send_file File.expand_path(params[:name] + ".css", amz_url)
