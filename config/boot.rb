@@ -15,7 +15,7 @@ require File.expand_path('starman', root_dir)
 #end
 
 if ENV['RACK_ENV'] = "development"
-  require 'dev-aw3-config.rb'
+  require_relative 'dev-aw3-config.rb'
 end
 
 ENV['POSTS_DIR'] = 'content'
