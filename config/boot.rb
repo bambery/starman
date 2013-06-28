@@ -14,7 +14,7 @@ require File.expand_path('starman', root_dir)
 # $stderr.reopen(log)
 #end
 
-if ENV['RACK_ENV'] = "development"
+if ENV['RACK_ENV'] == "development"
   require_relative 'dev-aw3-config.rb'
 end
 
