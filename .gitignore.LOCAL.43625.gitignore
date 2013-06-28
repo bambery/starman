@@ -1,0 +1,8 @@
+*.swp
+.DS_Store
+.DS_Store?
+._*
+/log
+.sass-cache
+.gitback
+dev-aw3-config.rb

@@ -1,0 +1,11 @@
+*.swp
+.DS_Store
+.DS_Store?
+._*
+/log
+.sass-cache
+<<<<<<< HEAD
+.gitback
+dev-aw3-config.rb
+=======
+>>>>>>> staging/master

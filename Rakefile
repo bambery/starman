@@ -27,7 +27,8 @@ namespace :assets do
     Sass::Plugin.options[:cache] = :false
     Sass::Plugin.options[:style] = :compressed
     Sass::Plugin.options[:template_location] = "#{File.dirname(__FILE__)}/assets/css/sass"
-    Sass::Plugin.options[ :css_location ] = "#{File.dirname(__FILE__)}/assets/css"
+#    Sass::Plugin.options[ :css_location ] = "#{File.dirname(__FILE__)}/assets/css"
+    Sass::Plugin.options[ :css_location ] = "./public"
     Sass::Plugin.update_stylesheets
 
     # upload to S3
