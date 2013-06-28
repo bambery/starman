@@ -1,13 +1,15 @@
-require 'rspec/core/rake_task'
 require 'rake'
 require 'asset_sync'
 require 'sass/plugin/rack'
-require_relative 'config/dev-aw3-config'
 
-RSpec::Core::RakeTask.new
+if ENV['RACK_ENV'] != "production" 
+  require 'rspec/core/rake_task'
+  require_relative 'config/dev-aw3-config'
+  RSpec::Core::RakeTask.new
 
-task :default => :spec
-task :test => :spec
+  task :default => :spec
+  task :test => :spec
+end
 
 AssetSync.configure do |config|
   config.fog_provider = 'AWS'
