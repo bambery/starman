@@ -21,8 +21,4 @@ class Section
     return Dir.exists?(File.join(ENV['POSTS_DIR'], section))
   end
 
-  def self.mtime(section)
-    return File.mtime(File.join(ENV['POSTS_DIR'], section))
-  end
-
 end

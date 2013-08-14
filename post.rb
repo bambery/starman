@@ -63,10 +63,6 @@ class Post
     return File.exist?(File.join(ENV['POSTS_DIR'], post_name + ".mdown"))
   end
 
-  def self.mtime(post_name)
-    return File.mtime(File.join(ENV['POSTS_DIR'], post_name + ".mdown"))
-  end
-
   def parse_file_data(metadata_text, content)
     # parses date and entry summary, discards any extra metadata
     metadata = Hash.new
