@@ -1,6 +1,6 @@
 %html
   %head
     %title #{@title ? @title : "Something Wicked This Way Codes"} 
-    %link{:rel => 'stylesheet', :type => 'text/css',  :href => 'css/layout.css'}
+    = stylesheet_tag 'layout' 
   %body
     = yield

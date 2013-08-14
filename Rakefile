@@ -1,42 +1,13 @@
 require 'rake'
-require 'pathname'
-require 'asset_sync'
+require './config/boot.rb'
+require 'sprockets-sass'
 require 'sass/plugin/rack'
 
-if ENV['RACK_ENV'] != "production" 
-  require 'rspec/core/rake_task'
-  require_relative 'config/dev-aw3-config'
-  RSpec::Core::RakeTask.new
-
-  task :default => :spec
-  task :test => :spec
-end
-
-AssetSync.configure do |config|
-  config.fog_provider = 'AWS'
-#  config.fog_region = 'us-west-2'
-  config.fog_region = ENV['FOG_REGION'] 
-  config.fog_directory = ENV['FOG_DIRECTORY']
-  config.aws_access_key_id = ENV['AWS_ACCESS_KEY_ID']
-  config.aws_secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
-  config.prefix = "assets/css"
-  config.public_path = Pathname("./public")
-  config.existing_remote_files = 'delete'
-end
+RSpec::Core::RakeTask.new(:spec)
 
 namespace :assets do
-  desc 'Precompile assets and upload to S3'
-  task :precompile do 
-
-    # compile sass and store the css in public/assets/css if they have been changed since the last compilation 
-    Sass::Plugin.options[:cache] = :false
-    Sass::Plugin.options[:style] = :compressed
-    Sass::Plugin.options[:template_location] = "#{File.dirname(__FILE__)}/assets/css"
-    Sass::Plugin.options[ :css_location ] = "./public/assets/css"
-    Sass::Plugin.update_stylesheets
-
-    # upload any changed files to S3
-    AssetSync.sync
+  desc 'compile assets'
+  task :sync do
+    CloudCrooner.assets_to_compile = ['layout.css']
   end
 end
-

@@ -1,6 +1,8 @@
 require 'memcachier'
 require 'dalli'
 require 'sass'
+require 'sinatra/base'
+require 'sprockets/helpers'
 require 'redcarpet'
 
 require File.expand_path('post', File.dirname(__FILE__))
@@ -12,9 +14,12 @@ require File.expand_path('starman_error', File.dirname(__FILE__))
 module Starman
   class App < Sinatra::Base
 
-    helpers Starman::CachingHelpers 
-    helpers Starman::LogHelpers 
-    helpers Starman::PostHelpers
+    helpers do
+      include Starman::CachingHelpers 
+      include Starman::LogHelpers 
+      include Starman::PostHelpers
+      include Sprockets::Helpers
+    end
 
     configure do
       set :root, File.dirname(__FILE__)
@@ -25,32 +30,8 @@ module Starman
   #    log.sync = true
   #    use Rack::CommonLogger, log 
       #    look for sass in assets/css, and compile it into css in public/assets/css
-      set :scss, :views => "#{settings.root}/assets/css"
     end
     
-    configure :development, :test do
-      require_relative('config/dev-aw3-config')
-      #enable :use_s3 
-      disable :use_s3 
-      set :asset_host, "s3-#{ENV['FOG_REGION']}.amazonaws.com"
-      set :fog_directory, "#{ENV['FOG_DIRECTORY']}"
-    end
-
-    configure :production do
-      enable :use_s3 
-      set :asset_host, "#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com/assets"
-    end
-
-    get '/css/:name.css' do 
-      if settings.use_s3?
-        #grab the precompiled css from s3 
-        p File.join(settings.asset_host, settings.fog_directory, "assets", "css", params[:name] + ".css")
-        send_file File.join(settings.asset_host, settings.fog_directory, "assets", "css", params[:name] + ".css")
-      else
-        scss params[:name].to_sym
-      end
-    end
-
     get '/' do
       haml :index 
     end

@@ -5,9 +5,10 @@ gem 'sinatra', "~> 1.4.2"
 gem 'thin'
 
 group :assets do 
-  gem 'asset_sync'
   gem 'haml'
+  gem 'cloud_crooner'
   gem 'sass'
+  gem 'sprockets-sass'
   gem 'therubyracer'
   gem 'redcarpet'
   gem 'fog', '~> 1.12.1'
