@@ -29,17 +29,23 @@ module Starman
     end
     
     configure :development, :test do
+      require_relative('config/dev-aw3-config')
+      #enable :use_s3 
       disable :use_s3 
+      set :asset_host, "s3-#{ENV['FOG_REGION']}.amazonaws.com"
+      set :fog_directory, "#{ENV['FOG_DIRECTORY']}"
     end
 
     configure :production do
       enable :use_s3 
+      set :asset_host, "#{ENV['FOG_DIRECTORY']}.s3.amazonaws.com/assets"
     end
 
     get '/css/:name.css' do 
       if settings.use_s3?
         #grab the precompiled css from s3 
-        send_file File.expand_path(params[:name] + ".css", amz_url)
+        p File.join(settings.asset_host, settings.fog_directory, "assets", "css", params[:name] + ".css")
+        send_file File.join(settings.asset_host, settings.fog_directory, "assets", "css", params[:name] + ".css")
       else
         scss params[:name].to_sym
       end

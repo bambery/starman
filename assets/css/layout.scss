@@ -1,8 +1,10 @@
-// Adapted from Bootstrap Twitter. Haters to the left. 
-//
 // Base variables and mixins pulled out for easy access 
 //@import "variables";
-//@import "mixins";
+@import "mixins";
 //
 // CSS reset 
 @import "normalize";
+
+h1 {
+  color:red;
+}
