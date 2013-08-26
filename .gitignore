@@ -6,3 +6,5 @@
 .sass-cache
 .gitback
 dev-aw3-config.rb
+/public
+tags

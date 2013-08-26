@@ -4,14 +4,13 @@ class Post
 
   attr_reader :name, :section, :basename, :metadata, :content
 
+  ##
+  # The posts name is also its hash key - [section]/[digest file name]
+  #
   def initialize(post_name)
-
-    
-    # the posts name is also its hash key - [section]/[file name without ext]
     @name = post_name
     @section, @basename = get_section_and_basename
     @metadata, @content = parse_file
-
   end
 
   def get_section_and_basename
@@ -23,52 +22,61 @@ class Post
   end
 
   def ==(other)
-    if 
-      self.class == other.class &&
-      @name == other.name &&
-      @section == other.section &&
-      @basename == other.basename &&
-      @metadata == other.metadata &&
-      @content == other.content 
-      return true
-    else
-      return false
-    end
+    self.class == other.class &&
+    @name == other.name &&
+    @section == other.section &&
+    @basename == other.basename &&
+    @metadata == other.metadata &&
+    @content == other.content 
   end
 
+  def compiled_content_dir
+    @compiled_content_dir ||= CloudCrooner.manifest.dir
+  end
+
+  ##
+  # Read in the fingerprinted markdown file and separate into metadata and 
+  # content at the delimiter.
+  #
   def parse_file
-    if ENV['POSTS_DIR'].nil?
-#      raise StarmanErrors::ConfigError, "The config which contains the env vars is not being loaded."
-    elsif !Post.exists?(@name)
-      raise Starman::FileNotFoundError.new(@name)
-    end
+    raise Starman::FileNotFoundError.new(@name) unless Post.exists?(@name) 
 
     file_data = read_post_file 
     # TODO: better check for proper formatting
-    # raise "the post #{@name} is not formatted properly. Please see Starman doc for details.
-    if !file_data.include?("*-----*-----*")
+    unless file_data.include?("*-----*-----*")
       raise Starman::FormattingError.new(@name)
     end
     metadata_text, content = file_data.split("*-----*-----*")
-    return parse_file_data(metadata_text.strip, content.strip)
+    parse_file_data(metadata_text.strip, content.strip)
   end
 
+  # ##
+  # Read markdown file into memory for processing.
+  # Posts need to be relatively small files as this method will 
+  # consume a lot of memory if the files are large. Fine for my use.
+  #
   def read_post_file
-    # posts need to be relatively small files, as this method will consume a lot of memory if the files are large. Fine for my use.
-    File.read(File.join(ENV['POSTS_DIR'], @name + ".mdown"))
+    File.read(File.join(compiled_content_dir, @name)
   end
 
+  ##
+  # Check if the fingerprinted post exists on the file system.
+  #
   def self.exists?(post_name)
-    # only markdown posts are allowed
-    return File.exist?(File.join(ENV['POSTS_DIR'], post_name + ".mdown"))
+    File.exist?(File.join(compiled_content_dir, post_name)
   end
 
+  ##
+  # Parse date, entry summary and title; discards extra metadata.
+  # If any metadata is missing or the content is empty, default data are
+  # supplied.
+  #
   def parse_file_data(metadata_text, content)
-    # parses date and entry summary, discards any extra metadata
     metadata = Hash.new
     required_data = ["date", "summary", "title"]
     required_data << "content" if content.empty?
     metadata_text.lines.each do |mdata_line|
+      # remove surrounding whitespace. If line is empty or invalid format, skip
       mdata_line.strip!
       next if mdata_line.empty?
       raise Starman::InvalidMetadata.new(@name, mdata_line) unless is_metadata?(mdata_line)
@@ -97,29 +105,30 @@ class Post
       end #end case
     end # end do
 
-    metadata, content = populate_missing_fields(required_data, metadata, content) if !required_data.empty?
+    metadata, content = populate_missing_fields(required_data, metadata, content) unless required_data.empty?
 
     return metadata, content
   end
 
-    def populate_missing_fields(required_data, metadata, content)
-      required_data.each do |item|
-        case item
-          when "date"
-            # a post must have a date
-            raise Starman::DateError.new(@name) 
-          when "summary"
-            content = "This entry is empty. Please write something here!" if content.empty? 
-            required_data.delete("content") 
-            metadata["summary"] = content[0..100].strip 
-          when "content"
-            content = "This entry is empty. Please write something here!" if content.empty? 
-          when "title"
-            metadata["title"] = @basename.gsub("_", " ") 
-        end # end case
-      end # end do
-      return metadata, content
-    end
+  def populate_missing_fields(required_data, metadata, content)
+    required_data.each do |item|
+      case item
+        when "date"
+          # a post must have a date
+          raise Starman::DateError.new(@name) 
+        when "summary"
+          content = "This entry is empty. Please write something here!" if content.empty? 
+          required_data.delete("content") 
+          metadata["summary"] = content[0..100].strip 
+        when "content"
+          content = "This entry is empty. Please write something here!" if content.empty? 
+        when "title"
+          # default title is the file name
+          metadata["title"] = @basename.chomp.(".mdown").gsub("_", " ") 
+      end # end case
+    end # end do
+    return metadata, content
+  end
 
 
   def is_metadata?(mdata_line)

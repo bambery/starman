@@ -1,11 +1,23 @@
 module Starman
-  # cache expirations only happen after a push, and are handled in PostReleaseHooks rather than here
   module CachingHelpers 
+
+    def manifest
+      @manifest ||= CloudCrooner.manifest
+    end
+
+    ##
+    # Attempt to find the post in the cache. First do a manifest lookup
+    # to find the most recent digest, then check the cache for the digest name.
+    # If not found, process the digest file and throw it in memcached
+    #
     def get_or_add_post_to_cache(post_path)
-      post = settings.memcached.get(post_path)
-      if post.nil? 
-        post = Post.new(post_path)
-        settings.memcached.set(post_path, post) 
+      # For better or worse, I've just enforced that all posts must be .mdown
+      # key also now has .mdown at the end - will have consequences 
+      post_digest = manifest.assets[post_path + '.mdown']
+      post = settings.memcached.get(post_digest) if post_digest
+      if post_digest.nil? || post.nil? 
+        post = Post.new(post_digest)
+        settings.memcached.set(post_digest, post) 
       end
       return post
     end
