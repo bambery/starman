@@ -124,7 +124,7 @@ class Post
           content = "This entry is empty. Please write something here!" if content.empty? 
         when "title"
           # default title is the file name
-          default_title = @basename.chomp(".mdown")
+          default_title = @basename.gsub(/-[0-9a-z]*\.mdown/, "")
           metadata["title"] = default_title.split('_').map(&:capitalize).join(' ')
       end # end case
     end # end do

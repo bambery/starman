@@ -33,7 +33,7 @@ module Starman
 
   class NameError < StarmanError
     def message
-      "Posts must be initialized with a name in the form [section]/[filename], #{@name} was passed in."  
+      "Posts must be initialized with a name in the form [section]/[filename]-[digest].mdown, #{@name} was passed in."  
     end
   end
 
