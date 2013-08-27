@@ -7,19 +7,19 @@ describe Post, "#initialize" do
     before(:each) do
       Post.stub(:exists?) { true }
       Post.any_instance.stub(:read_post_file) { FactoryGirl.create(:post_data) }
-      @test_post = Post.new("blog/goodbye_love.mdown")
+      @test_post = Post.new("normal/post.mdown")
     end
 
     it 'assigns the name' do
-      @test_post.name.should eq("blog/goodbye_love.mdown")
+      @test_post.name.should eq("normal/post.mdown")
     end
 
     it 'assigns the section' do
-      @test_post.section.should eq("blog")
+      @test_post.section.should eq("normal")
     end
 
     it 'assigns the basename' do 
-      @test_post.basename.should eq("goodbye_love.mdown")
+      @test_post.basename.should eq("post.mdown")
     end
   end # end valid post name
 

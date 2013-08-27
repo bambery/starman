@@ -13,13 +13,21 @@ module Starman
     def get_or_add_post_to_cache(post_path)
       # For better or worse, I've just enforced that all posts must be .mdown
       # key also now has .mdown at the end - will have consequences 
-      post_digest = manifest.assets[post_path + '.mdown']
-      post = settings.memcached.get(post_digest) if post_digest
-      if post_digest.nil? || post.nil? 
-        post = Post.new(post_digest)
-        settings.memcached.set(post_digest, post) 
+      post_digest_path = newest_post_digest(post_path)
+      post = settings.memcached.get(post_digest_path)
+      if post.nil? 
+        post = Post.new(post_digest_path)
+        settings.memcached.set(post_digest_path, post) 
       end
       return post
+    end
+
+    ##
+    # check the manifest for the most recent fingerprinted name for a post
+    #
+    def newest_post_digest(post_path)
+      manifest.assets[post_path + '.mdown'] ||
+        (raise Starman::DigestNotFoundError.new(post_path))
     end
 
     def get_or_add_section_to_cache(section)

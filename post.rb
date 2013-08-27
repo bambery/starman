@@ -14,7 +14,7 @@ class Post
   end
 
   def get_section_and_basename(post_name)
-    if /^\w+\/\w+\.mdown/ === post_name 
+    if /^\w+\/\w+-[0-9a-z]*\.mdown/ === post_name 
       post_name.split('/')
     else
      raise Starman::NameError.new(post_name)
@@ -56,7 +56,7 @@ class Post
   # consume a lot of memory if the files are large. Fine for my use.
   #
   def read_post_file
-    File.read(File.join(compiled_content_dir, @name))
+    File.read(File.join(Post.compiled_content_dir, @name))
   end
 
   ##

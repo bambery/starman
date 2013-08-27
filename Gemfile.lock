@@ -96,6 +96,7 @@ GEM
     sprockets-sass (1.0.1)
       sprockets (~> 2.0)
       tilt (~> 1.1)
+    test-construct (1.2.0)
     therubyracer (0.12.0)
       libv8 (~> 3.16.14.0)
       ref
@@ -131,5 +132,6 @@ DEPENDENCIES
   sinatra (~> 1.4.2)
   sinatra-partial
   sprockets-sass
+  test-construct
   therubyracer
   thin

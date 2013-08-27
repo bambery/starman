@@ -24,6 +24,12 @@ module Starman
       "Trying to create a post with the name #{@name} failed because this file does not exist on the system."
     end
   end
+  
+  class DigestNotFoundError < StarmanError
+    def message
+      "The file #{@name} does not have an entry in the manifest."
+    end
+  end
 
   class NameError < StarmanError
     def message
