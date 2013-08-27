@@ -8,6 +8,11 @@ require 'factory_girl'
 
 #Dir[File.expand_path('./support/**/*.rb', __FILE__)].each { |f| require f }
 require_relative './support/helper.rb'
+require_relative '../post.rb'
+require_relative '../starman.rb'
+require_relative '../starman_error.rb'
+require_relative '../helpers.rb'
+require_relative '../section.rb'
 
 # required for testing
 def app

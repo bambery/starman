@@ -25,5 +25,5 @@ ENV['TEST_MEMCACHED_SERVER'] = '127.0.0.1:11211'
 
 CloudCrooner.configure do |config|
   config.asset_paths = %w( assets/css )
-  config.serve_assets = local_static
+  config.serve_assets = "local_static"
 end

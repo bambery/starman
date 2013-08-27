@@ -9,15 +9,15 @@ class Post
   #
   def initialize(post_name)
     @name = post_name
-    @section, @basename = get_section_and_basename
+    @section, @basename = get_section_and_basename(post_name)
     @metadata, @content = parse_file
   end
 
-  def get_section_and_basename
-    if /^\w+\/\w+$/ === @name 
-      @name.split('/')
+  def get_section_and_basename(post_name)
+    if /^\w+\/\w+\.mdown/ === post_name 
+      post_name.split('/')
     else
-     raise Starman::NameError.new(@name)
+     raise Starman::NameError.new(post_name)
     end
   end
 
@@ -30,7 +30,7 @@ class Post
     @content == other.content 
   end
 
-  def compiled_content_dir
+  def self.compiled_content_dir
     @compiled_content_dir ||= CloudCrooner.manifest.dir
   end
 
@@ -56,20 +56,20 @@ class Post
   # consume a lot of memory if the files are large. Fine for my use.
   #
   def read_post_file
-    File.read(File.join(compiled_content_dir, @name)
+    File.read(File.join(compiled_content_dir, @name))
   end
 
   ##
   # Check if the fingerprinted post exists on the file system.
   #
   def self.exists?(post_name)
-    File.exist?(File.join(compiled_content_dir, post_name)
+    File.exist?(File.join(compiled_content_dir, post_name))
   end
 
   ##
   # Parse date, entry summary and title; discards extra metadata.
-  # If any metadata is missing or the content is empty, default data are
-  # supplied.
+  # If summary or title is missing or the content is empty, default data are
+  # supplied; if date is missing, it will fail
   #
   def parse_file_data(metadata_text, content)
     metadata = Hash.new
@@ -114,7 +114,7 @@ class Post
     required_data.each do |item|
       case item
         when "date"
-          # a post must have a date
+          # a post must have a date since section depends on it
           raise Starman::DateError.new(@name) 
         when "summary"
           content = "This entry is empty. Please write something here!" if content.empty? 
@@ -124,7 +124,8 @@ class Post
           content = "This entry is empty. Please write something here!" if content.empty? 
         when "title"
           # default title is the file name
-          metadata["title"] = @basename.chomp.(".mdown").gsub("_", " ") 
+          default_title = @basename.chomp(".mdown")
+          metadata["title"] = default_title.split('_').map(&:capitalize).join(' ')
       end # end case
     end # end do
     return metadata, content
