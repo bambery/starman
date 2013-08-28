@@ -11,7 +11,6 @@ group :assets do
   gem 'sprockets-sass'
   gem 'therubyracer'
   gem 'redcarpet'
-  gem 'fog', '~> 1.12.1'
 end
 
 # sinatra helpers

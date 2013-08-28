@@ -120,7 +120,6 @@ DEPENDENCIES
   cucumber
   dalli
   factory_girl
-  fog (~> 1.12.1)
   haml
   kgio
   memcachier

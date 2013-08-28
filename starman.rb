@@ -29,7 +29,6 @@ module Starman
   #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
   #    log.sync = true
   #    use Rack::CommonLogger, log 
-      #    look for sass in assets/css, and compile it into css in public/assets/css
     end
     
     get '/' do

@@ -30,18 +30,32 @@ module Starman
         (raise Starman::DigestNotFoundError.new(post_path))
     end
 
-    def get_or_add_section_to_cache(section)
-      section_posts = settings.memcached.get(section)
+    def newest_section_digest(section)
+      manifest.assets[section] ||
+        (raise Starman::DigestNotFoundError.new(section))
+    end
+
+    ##
+    # At asset compile, section folders have a proxy file created for them based 
+    # on the contents of the section. The proxy's digest is used as the cache 
+    # key to track changes in the section.
+    #
+    def get_or_add_section_to_cache(section_name)
+      section_digest = newest_section_digest(section)
+      section_posts = settings.memcached.get(section_digest)
       if section_posts.nil?
-        new_sec = Section.new(section)
+        new_sec = Section.new(section_name)
         section_posts = sort_posts_by_date_and_add_to_cache(new_sec)
-        settings.memcached.set(new_sec.name, section_posts)
+        settings.memcached.set(section_digest, section_posts)
       end
       return section_posts 
     end
 
+    ##
+    # Grab all posts in section, add them to the cache, sort them by date, 
+    # then save the array of sorted post names on the section
+    #
     def sort_posts_by_date_and_add_to_cache(section)
-      # grab all posts in section, add them to the cache, sort them by date, then save the array of sorted post names on the section
       sec_posts = section.posts.map { |post_name| get_or_add_post_to_cache(post_name) }
       sec_posts.sort! { |a,b| b.date <=> a.date }
       sec_posts.map! { |post| post.name }
