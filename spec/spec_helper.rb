@@ -9,7 +9,7 @@ require 'construct'
 
 #Dir[File.expand_path('./support/**/*.rb', __FILE__)].each { |f| require f }
 #require_relative './support/helper.rb'
-require_relative '../post.rb'
+#require_relative '../post.rb'
 #require_relative '../starman.rb'
 #require_relative '../starman_error.rb'
 #require_relative '../helpers.rb'
@@ -37,8 +37,16 @@ RSpec.configure do |config|
       CloudCrooner.instance_variable_set(var, nil)
     end
 
-    Post.instance_variable_set(:@compiled_content_dir, nil)
+    Post.instance_variable_set(:@compiled_content_dir, nil) if defined?(Post)
   end
-  
+
+  def sample_files(construct)
+    lambda { |c|
+      c.file('public/assets/blog/p1-123.mdown')
+      c.file('public/assets/blog/p2-123.mdown')
+      c.file('public/assets/blog/p3-123.mdown')
+    }.call(construct)
+  end
+
 end
 

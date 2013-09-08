@@ -1,28 +1,27 @@
-class Section
-  attr_reader :name
-  attr_accessor :posts
+module Starman
+  class Section
+    attr_reader :name
+    attr_accessor :posts
 
-  def initialize(name)
-    @name = name
-    @posts = find_posts
+    def initialize(name)
+      @name = name
+      @posts = get_compiled_posts 
+    end
+
+    ##
+    # returns an array of the hash keys of posts in the section
+    # 
+    def get_compiled_posts
+      raise Starman::SectionNotFound.new(name) unless Section.exists?(name)
+      posts = Content.get_content(File.join(Content.compiled_content_dir, @name, '/*'))
+      p "this is posts #{posts}"
+      # return hash keys
+      posts.map! { |post| post.gsub(Content.compiled_content_dir + "/", "") }
+    end
+
+    def self.exists?(section)
+      return Dir.exists?(File.join(Content.compiled_content_dir, section))
+    end
+    
   end
-
-  def self.compiled_content_dir
-    CloudCrooner.manifest.dir
-  end
-
-  def find_posts
-    raise Starman::SectionNotFound.new(@name) unless Section.exists?(@name)
-    # exclude any dotfiles
-    posts = Dir.entries(File.join(Section.compiled_content_dir, @name)).delete_if {|i| i =~ /^\./} 
-    if posts.size == 0 then raise Starman::SectionEmpty.new(@name) end 
-    # get an array of the posts's hash keys
-    posts.map! { |post| File.join(@name, post) }
-    return posts
-  end
-
-  def self.exists?(section)
-    return Dir.exists?(File.join(compiled_content_dir, section))
-  end
-
 end

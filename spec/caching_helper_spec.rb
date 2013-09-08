@@ -38,14 +38,7 @@ describe Starman do
         within_construct do |c|
           c.directory('posts')
           c.file("posts/blog/normal_data.mdown", FactoryGirl.create(:post_data))
-          p "manibefore"
-          p CloudCrooner.manifest.assets
           CloudCrooner.manifest.compile('blog/normal_data.mdown')
-          p "maniafter"
-          p CloudCrooner.manifest.assets
-          p "my glob"
-          p Dir.glob(Post.compiled_content_dir + "/**/*")
-          p Post.compiled_content_dir
 
           @post_double = Post.new(CloudCrooner.sprockets["blog/normal_data.mdown"].digest_path)
           @post = testapp.new.get_or_add_post_to_cache("blog/normal_data")
@@ -125,25 +118,27 @@ describe Starman do
     end
 
   end # post helpers
-end
-#  context 'section helpers', :section => true do
-#    context 'the cache is empty' do
-#      before(:each) do
-#        @test_memcached_server = ENV['TEST_MEMCACHED_SERVER']
-#
-#        app.settings.memcached.flush
-#        @get_misses = app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i
-#        @get_hits= app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i
-#        @set_count= app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i
-#
-#      end
-#
-#      it 'adds a section to the cache' do
-#        @section = "blog"
-#        Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
-#        @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
-#        expect(app.settings.memcached.get(@section)).to eq(@section_posts)
-#      end
+#end
+  context 'section helpers', :section => true do
+    context 'the cache is empty' do
+      before(:each) do
+        @test_memcached_server = '127.0.0.1:11211'
+        @memcached = testapp.new.settings.memcached
+        @memcached.flush
+        CloudCrooner.prefix = 'section'
+
+        @get_misses = @memcached.stats[@test_memcached_server]["get_misses"].to_i
+        @get_hits= @memcached.stats[@test_memcached_server]["get_hits"].to_i
+        @set_count= @memcached.stats[@test_memcached_server]["cmd_set"].to_i
+      end
+
+      it 'adds a section to the cache' do
+        @section = "blog"
+        Dir.stub(:entries) {create_and_add_section_posts_to_cache(@section, ["best_post", "second_best", "ok_post"])}
+        @section_posts = cachinghelpers.new.get_or_add_section_to_cache(@section)
+        expect(app.settings.memcached.get(@section)).to eq(@section_posts)
+      end # it
+    end # empty cache
 #
 #      it 'sorts the section posts by date' do
 #        @section = "blog"
@@ -185,4 +180,8 @@ end
 #
 #    end # end primed cache context
 #  end # end section cache helpers
-#end
+    after(:each) do 
+      reload_environment
+    end
+  end # section helpers
+end 
