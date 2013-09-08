@@ -8,3 +8,4 @@
 dev-aw3-config.rb
 /public
 tags
+spec/rspec_output.txt
