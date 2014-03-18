@@ -2,6 +2,7 @@ require 'cloud_crooner'
 
 require_relative 'spec_helper'
 require_relative '../post.rb'
+require_relative '../content.rb'
 require_relative '../starman_error'
 
 describe Starman::Post, "#initialize" do
