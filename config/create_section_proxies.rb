@@ -1,5 +1,8 @@
+# This file is old - this content has been moved into the section_proxy class
+# this file should be deleted
+#
 # This will create a proxy file for each folder under the content directory in 
-# order to represent each section in the manifest. 
+# order to represent each content "section" in the manifest. 
 # The proxy file's thumbprint will depend on the contents of the folder, 
 # and will update if the directory's contents change. This file name will be 
 # used as the memcached key. This file should be executed after configuring 
