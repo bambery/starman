@@ -6,14 +6,19 @@ module Starman
     end
 
     ##
-    # Attempt to find the post in the cache. First do a manifest lookup
-    # to find the most recent digest, then check the cache for the digest name.
+    # Attempt to find the post in the cache, if not there, place it there.
+    #
+    # Default is to pass in a post by section/post_name without digest or 
+    # format and then do a lookup in the manifest to find the compiled name.
+    # Optional (true) is to pass in the digest filename. 
+    #
+    # Check the cache with the digest name as key.
     # If not found, process the digest file and throw it in memcached
     #
-    def get_or_add_post_to_cache(post_path)
+    def get_or_add_post_to_cache(post_path, digest = false)
       # For better or worse, I've just enforced that all posts must be .mdown
       # key also now has .mdown at the end - will have consequences 
-      post_digest_path = newest_post_digest(post_path)
+      post_digest_path = digest ? post_path : newest_post_digest(post_path)
       post = settings.memcached.get(post_digest_path)
       if post.nil? 
         post = Post.new(post_digest_path)
@@ -31,7 +36,7 @@ module Starman
     end
 
     def newest_section_digest(section)
-      manifest.assets[section] ||
+      manifest.assets['proxies/'+ section +'-proxy.json'] ||
         (raise Starman::DigestNotFoundError.new(section))
     end
 
@@ -39,9 +44,10 @@ module Starman
     # At asset compile, section folders have a proxy file created for them based 
     # on the contents of the section. The proxy's digest is used as the cache 
     # key to track changes in the section.
+    # returns an array of fingerprinted memcached keys pointing to posts
     #
     def get_or_add_section_to_cache(section_name)
-      section_digest = newest_section_digest(section)
+      section_digest = newest_section_digest(section_name)
       section_posts = settings.memcached.get(section_digest)
       if section_posts.nil?
         new_sec = Section.new(section_name)
@@ -56,7 +62,7 @@ module Starman
     # then save the array of sorted post names on the section
     #
     def sort_posts_by_date_and_add_to_cache(section)
-      sec_posts = section.posts.map { |post_name| get_or_add_post_to_cache(post_name) }
+      sec_posts = section.posts.map { |digest_post_name| get_or_add_post_to_cache(digest_post_name, true) }
       sec_posts.sort! { |a,b| b.date <=> a.date }
       sec_posts.map! { |post| post.name }
       return sec_posts
