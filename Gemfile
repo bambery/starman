@@ -28,6 +28,6 @@ group :test, :development do
   gem 'rspec'
   gem 'capybara'
   gem 'factory_girl'
-  gem 'test-construct'
+  gem 'test_construct'
   gem 'shotgun'
 end
