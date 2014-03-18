@@ -11,6 +11,8 @@ module Starman
     ##
     # Gather the content requested by the glob minus directories 
     #
+    # FIXME: move into Section class
+    #
     def self.get_content(directory_glob)
       content = Dir.glob(directory_glob)
       # exclude directories
