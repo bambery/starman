@@ -9,19 +9,29 @@ module Starman
     end
 
     ##
-    # returns an array of the hash keys of posts in the section
+    # returns an unsorted array of the hash keys of posts in the section
+    #
+    # Can't sort by date here since I don't have access to the cache, and 
+    # reading and parsing posts is expensive.
     # 
+    # FIXME: issue right here if I wanted sections to work with local_dynamic
+    #
     def get_compiled_posts
       raise Starman::SectionNotFound.new(name) unless Section.exists?(name)
       posts = Content.get_content(File.join(Content.compiled_content_dir, @name, '/*'))
-      p "this is posts #{posts}"
-      # return hash keys
+      # remove content dir in path to return hash keys
       posts.map! { |post| post.gsub(Content.compiled_content_dir + "/", "") }
     end
 
+    # FIXME: will not work with local_dynamic
     def self.exists?(section)
       return Dir.exists?(File.join(Content.compiled_content_dir, section))
     end
     
+    # reassign the sorted posts to the section instance 
+    def posts=(sorted_posts)
+      @posts = sorted_posts
+    end
+
   end
 end
