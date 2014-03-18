@@ -31,10 +31,6 @@ module Starman
       @content == other.content 
     end
 
-    def self.compiled_content_dir
-      @compiled_content_dir ||= CloudCrooner.manifest.dir
-    end
-
     ##
     # Read in the fingerprinted markdown file and separate into metadata and 
     # content at the delimiter.
@@ -57,14 +53,14 @@ module Starman
     # consume a lot of memory if the files are large. Fine for my use.
     #
     def read_post_file
-      File.read(File.join(Post.compiled_content_dir, @name))
+      File.read(File.join(Content.compiled_content_dir, @name))
     end
 
     ##
     # Check if the fingerprinted post exists on the file system.
     #
     def self.exists?(post_name)
-      File.exist?(File.join(compiled_content_dir, post_name))
+      File.exist?(File.join(Content.compiled_content_dir, post_name))
     end
 
     ##
