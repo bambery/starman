@@ -238,20 +238,6 @@ describe Starman do
       end #it
     end #context
 
-#        @get_misses = app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i
-#        @get_hits= app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i
-#        @set_count= app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i
-#
-    
-#      it 'retrieves the section from the cache' do
-#        @blog_posts = cachinghelpers.new.get_or_add_section_to_cache("blog")
-#        @get_misses.should eq(app.settings.memcached.stats[@test_memcached_server]["get_misses"].to_i)
-#        @set_count.should eq(app.settings.memcached.stats[@test_memcached_server]["cmd_set"].to_i)
-#        (@get_hits+1).should eq(app.settings.memcached.stats[@test_memcached_server]["get_hits"].to_i)
-#      end
-#
-#    end # end primed cache context
-#  end # end section cache helpers
     after(:each) do 
       reload_environment
     end
