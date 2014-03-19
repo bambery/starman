@@ -1,6 +1,6 @@
 .bulbasaur.container
   %ul{:id => "blog_posts"}
-    - @section_posts.each do |post|
+    - @section.posts.each do |post|
       %li
         - @post = settings.memcached.get(post) 
         %a{:href => @post.name} #{@post.title}

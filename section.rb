@@ -1,10 +1,11 @@
 module Starman
   class Section
-    attr_reader :name
+    attr_reader :name, :cache_key
     attr_accessor :posts
 
-    def initialize(name)
+    def initialize(name, digest)
       @name = name
+      @cache_key = digest
       @posts = get_compiled_posts 
     end
 
@@ -27,11 +28,6 @@ module Starman
     def self.exists?(section)
       return Dir.exists?(File.join(Content.compiled_content_dir, section))
     end
-    
-    # reassign the sorted posts to the section instance 
-    def posts=(sorted_posts)
-      @posts = sorted_posts
-    end
-
+   
   end
 end

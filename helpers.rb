@@ -48,22 +48,24 @@ module Starman
     #
     def get_or_add_section_to_cache(section_name)
       section_digest = newest_section_digest(section_name)
-      section_posts = settings.memcached.get(section_digest)
-      if section_posts.nil?
-        new_sec = Section.new(section_name)
-        section_posts = sort_posts_by_date_and_add_to_cache(new_sec)
-        settings.memcached.set(section_digest, section_posts)
+      section = settings.memcached.get(section_digest)
+      if section.nil?
+        new_section = Section.new(section_name, section_digest)
+        new_section.posts = sort_posts_by_date_and_add_to_cache(new_section.posts)
+        settings.memcached.set(section_digest, new_section)
+        section = new_section 
       end
-      return section_posts 
+      return section 
     end
 
     ##
     # Grab all posts in section, add them to the cache, sort them by date, 
     # then save the array of sorted post names on the section
     #
-    def sort_posts_by_date_and_add_to_cache(section)
-      sec_posts = section.posts.map { |digest_post_name| get_or_add_post_to_cache(digest_post_name, true) }
+    def sort_posts_by_date_and_add_to_cache(sec_posts)
+      sec_posts.map! { |digest_post_name| get_or_add_post_to_cache(digest_post_name, true) }
       sec_posts.sort! { |a,b| b.date <=> a.date }
+      # only return the array of names
       sec_posts.map! { |post| post.name }
       return sec_posts
     end

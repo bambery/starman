@@ -53,7 +53,7 @@ module Starman
 
     get '/:section/?' do
       begin
-        @section_posts = get_or_add_section_to_cache(params[:section].downcase)
+        @section = get_or_add_section_to_cache(params[:section].downcase)
       rescue StarmanError => e
         add_error_to_log(e)
         pass
