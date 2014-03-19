@@ -64,7 +64,7 @@ describe Starman do
           (@set_count+=1).should eq(@memcached.stats[@test_memcached_server]["cmd_set"].to_i)
 
         # post is now in cache
-          @memcached.get(@post.name).should eq(@post)
+          @memcached.get(@post.digest_name).should eq(@post)
         end
       end
 
@@ -145,7 +145,7 @@ describe Starman do
           Starman::SectionProxy.create_section_proxies
           CloudCrooner.manifest.compile('proxies/blog-proxy.json', 'blog/best_post.mdown', 'blog/second_best.mdown', 'blog/ok_post.mdown')
           @section = testapp.new.get_or_add_section_to_cache(section_name)
-          expect(@memcached.get(@section.cache_key).posts).to eq(@section.posts)
+          expect(@memcached.get(@section.digest_name).posts).to eq(@section.posts)
         end # context
       end # it
     end # empty cache

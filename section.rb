@@ -1,11 +1,12 @@
 module Starman
   class Section
-    attr_reader :name, :cache_key
+    attr_reader :name, :digest_name, :cache_key
     attr_accessor :posts
 
     def initialize(name, digest)
+      # The section's digest_name is its memcached key
       @name = name
-      @cache_key = digest
+      @digest_name = digest
       @posts = get_compiled_posts 
     end
 

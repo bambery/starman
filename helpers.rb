@@ -66,7 +66,7 @@ module Starman
       sec_posts.map! { |digest_post_name| get_or_add_post_to_cache(digest_post_name, true) }
       sec_posts.sort! { |a,b| b.date <=> a.date }
       # only return the array of names
-      sec_posts.map! { |post| post.name }
+      sec_posts.map! { |post| post.digest_name }
       return sec_posts
     end
 

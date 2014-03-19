@@ -22,15 +22,15 @@ RSpec.configure do |config|
   config.include SectionTestHelpers
   FactoryGirl.find_definitions
   
-#  # don't pollute stdout with output during tests
-#  original_stdout = $stdout
-#  config.before(:all) do 
-#  # Redirect stderr and stdout
-#    $stdout = File.new(File.join(File.dirname(__FILE__), 'rspec_output.txt'), 'w')
-#  end
-#  config.after(:all) do 
-#    $stdout = original_stdout
-#  end
+  # don't pollute stdout with output during tests
+  original_stdout = $stdout
+  config.before(:all) do 
+  # Redirect stderr and stdout
+    $stdout = File.new(File.join(File.dirname(__FILE__), 'rspec_output.txt'), 'w')
+  end
+  config.after(:all) do 
+    $stdout = original_stdout
+  end
 
   # Need to unset class instance variables since I move them 
   # around a bit during tests. Gotta keep rspec on its toes.

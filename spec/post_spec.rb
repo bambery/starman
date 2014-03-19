@@ -15,7 +15,7 @@ describe Starman::Post, "#initialize" do
     end
 
     it 'assigns the name' do
-      @test_post.name.should eq("normal/post-abc.mdown")
+      @test_post.digest_name.should eq("normal/post-abc.mdown")
     end
 
     it 'assigns the section' do

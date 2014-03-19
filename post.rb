@@ -3,13 +3,14 @@ require 'date'
 module Starman
   class Post
 
-    attr_reader :name, :section, :basename, :metadata, :content
+    attr_reader :digest_name, :section, :basename, :metadata, :content
 
     ##
-    # The posts name is also its hash key - [section]/[digest file name]
+    # The posts's digest name is also its memcached key: 
+    #   [section]/[digest file name].mdown
     #
     def initialize(post_name)
-      @name = post_name
+      @digest_name = post_name
       @section, @basename = get_section_and_basename(post_name)
       @metadata, @content = parse_file
     end
@@ -24,7 +25,7 @@ module Starman
 
     def ==(other)
       self.class == other.class &&
-      @name == other.name &&
+      @digest_name == other.digest_name &&
       @section == other.section &&
       @basename == other.basename &&
       @metadata == other.metadata &&
@@ -36,12 +37,12 @@ module Starman
     # content at the delimiter.
     #
     def parse_file
-      raise Starman::FileNotFoundError.new(@name) unless Post.exists?(@name) 
+      raise Starman::FileNotFoundError.new(@digest_name) unless Post.exists?(@digest_name) 
 
       file_data = read_post_file 
       # TODO: better check for proper formatting
       unless file_data.include?("*-----*-----*")
-        raise Starman::FormattingError.new(@name)
+        raise Starman::FormattingError.new(@digest_name)
       end
       metadata_text, content = file_data.split("*-----*-----*")
       parse_file_data(metadata_text.strip, content.strip)
@@ -53,7 +54,7 @@ module Starman
     # consume a lot of memory if the files are large. Fine for my use.
     #
     def read_post_file
-      File.read(File.join(Content.compiled_content_dir, @name))
+      File.read(File.join(Content.compiled_content_dir, @digest_name))
     end
 
     ##
@@ -76,17 +77,17 @@ module Starman
         # remove surrounding whitespace. If line is empty or invalid format, skip
         mdata_line.strip!
         next if mdata_line.empty?
-        raise Starman::InvalidMetadata.new(@name, mdata_line) unless is_metadata?(mdata_line)
+        raise Starman::InvalidMetadata.new(@digest_name, mdata_line) unless is_metadata?(mdata_line)
         #delimit on first colon 
         key, value = mdata_line.split(/\s*:\s*/, 2)
         case key.downcase
           when "date"
             # TODO date format localization
-            raise Starman::DateError.new(@name) if value.strip.empty?
+            raise Starman::DateError.new(@digest_name) if value.strip.empty?
             begin
               metadata["date"] = DateTime.strptime(value, '%m/%d/%Y') 
             rescue ArgumentError
-              raise Starman::DateError.new(@name)
+              raise Starman::DateError.new(@digest_name)
             end
             required_data.delete("date")
           when "summary"
@@ -112,7 +113,7 @@ module Starman
         case item
           when "date"
             # a post must have a date since section depends on it
-            raise Starman::DateError.new(@name) 
+            raise Starman::DateError.new(@digest_name) 
           when "summary"
             content = "This entry is empty. Please write something here!" if content.empty? 
             required_data.delete("content") 
