@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler'
-#require 'sinatra/base'
 require 'cloud_crooner'
+require 'sprockets-sass'
 require 'date'
 
 Bundler.setup
@@ -15,15 +15,15 @@ Bundler.setup
 # $stderr.reopen(log)
 #end
 
-#if ENV['RACK_ENV'] == "development"
-#  require_relative 'dev-aw3-config.rb'
-#end
-
 ENV['POSTS_DIR'] = 'content'
 
 ENV['TEST_MEMCACHED_SERVER'] = '127.0.0.1:11211'
 
 CloudCrooner.configure do |config|
-#  config.asset_paths = %w( assets/css assets )
   config.serve_assets = "local_static"
+  config.asset_paths = %w( assets content )
+  config.assets_to_compile = %w( stylesheets/layout.css blog/baz.mdown )
 end
+
+Starman::SectionProxy.create_section_proxies
+CloudCrooner.sync

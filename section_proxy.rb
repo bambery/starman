@@ -1,4 +1,5 @@
 require 'json'
+require './content'
 
 module Starman
   class SectionProxy
@@ -32,7 +33,6 @@ module Starman
     def self.create_section_proxies
       empty_section_proxies
       sections = Dir.glob(Content.raw_content_dir + "/*/")
-      p sections
       sections.each do |section| 
         proxy = SectionProxy.new(File.basename(section))
         proxy.write_proxy_for_section

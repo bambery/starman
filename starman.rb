@@ -2,7 +2,7 @@ require 'memcachier'
 require 'dalli'
 require 'sass'
 require 'sinatra/base'
-require 'sprockets/helpers'
+require 'sinatra/sprockets-helpers'
 require 'redcarpet'
 
 require File.expand_path('post', File.dirname(__FILE__))
@@ -10,6 +10,8 @@ require File.expand_path('section', File.dirname(__FILE__))
 require File.expand_path('helpers', File.dirname(__FILE__))
 require File.expand_path('view_helpers', File.dirname(__FILE__))
 require File.expand_path('starman_error', File.dirname(__FILE__))
+require File.expand_path('section_proxy', File.dirname(__FILE__))
+require File.expand_path('content', File.dirname(__FILE__))
 
 module Starman
   class App < Sinatra::Base
@@ -29,6 +31,9 @@ module Starman
   #    log = File.new("#{settings.root}/log/#{settings.environment}.log", "a+")
   #    log.sync = true
   #    use Rack::CommonLogger, log 
+      #Sprockets::Helpers.configure do |config|
+      #  config.default_path_options[:stylesheet_path][:dir] = 'css'
+      #end
     end
     
     get '/' do

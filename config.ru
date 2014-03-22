@@ -1,7 +1,7 @@
-require './starman.rb'
+require './content.rb'
+require './section_proxy.rb'
 require File.expand_path('config/boot', File.dirname(__FILE__))
-
-CloudCrooner.sync 
+require './starman.rb'
 
 map '/' + CloudCrooner.prefix do
   run CloudCrooner.sprockets

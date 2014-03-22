@@ -1,3 +1,5 @@
+require './starman_error'
+
 module Starman
   module Content
 

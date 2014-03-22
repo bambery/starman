@@ -3,15 +3,16 @@ require 'date'
 module Starman
   class Post
 
-    attr_reader :digest_name, :section, :basename, :metadata, :content
+    attr_reader :name, :digest_name, :section, :basename, :metadata, :content
 
     ##
     # The posts's digest name is also its memcached key: 
     #   [section]/[digest file name].mdown
     #
     def initialize(post_name)
-      @digest_name = post_name
       @section, @basename = get_section_and_basename(post_name)
+      @name = postname.gsub(/-[0-9a-z]*\.mdown/, "")
+      @digest_name = post_name
       @metadata, @content = parse_file
     end
 
@@ -23,6 +24,7 @@ module Starman
       end
     end
 
+    # this is only used in testing, pull out into helper
     def ==(other)
       self.class == other.class &&
       @digest_name == other.digest_name &&

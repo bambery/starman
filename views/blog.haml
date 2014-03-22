@@ -3,5 +3,6 @@
     - @section.posts.each do |post|
       %li
         - @post = settings.memcached.get(post) 
-        %a{:href => @post.name} #{@post.title}
+        %a{:href => @post.digest_name} #{@post.title}
         %p #{@post.summary}
+        // right here I have the hash key in @post.digest_key... there is no reason to look it up again after the routing, though I no longer have the post object because this is a loop, so @post was reset. But there is no reason to look it up again in get_or_add_post_to_cache....
