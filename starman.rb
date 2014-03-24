@@ -37,7 +37,7 @@ module Starman
     end
     
     get '/' do
-      haml :index 
+      haml :index
     end
 
     get '/section' do

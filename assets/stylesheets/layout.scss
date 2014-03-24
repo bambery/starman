@@ -1,15 +1,88 @@
-// Base variables and mixins pulled out for easy access 
-//@import "variables";
-@import "mixins";
 //
 // CSS reset 
 @import "normalize";
+// Base variables and mixins pulled out for easy access 
+@import "variables";
+@import "mixins";
+
+$base-font-size: .8em;
+$hero-background:#9b1500;
+$page-background: #dfe6df;
 
 #page {
-  margin: 30px auto;
-  width: 90%;
+  @include box-sizing(border-box);
+  .container {
+    width: 80%;
+    margin: 0 auto 0;
+  }
 }
 
+div, ul, li, h1 {
+  margin: 0;
+}
+
+body {
+  background-color: $page-background;
+}
+
+p {
+  margin: 0 0 $base-font-size/2;
+}
+.nav-bar {
+  position: relative;
+  display: block;
+  clear:both;
+  z-index: 1000;
+  border: 0;
+  padding: 0;
+  
+  ul {
+    padding:0;
+  }
+
+  li {
+    font-size: $base-font-size * .9;
+    display: inline-block;
+    margin: .5em 1em .5em 0;
+  }
+}
+
+.index {
+
+  .dev {
+    padding: 1% 0 1%;
+    margin: auto;
+  }
+
+  .ux {
+    width:50%;
+    background-color:pink;
+  }
+
+  .col-content {
+//    margin: 0 5% 0 5%;
+    max-width: 800px;
+  }
+
+}
+
+
 h1 {
-  color:blue;
+  font-size: $base-font-size * 3;
+}
+
+.hero {
+  background-color: $hero-background;
+  color: lighten($hero-background, 50%); 
+  padding: 3.5% 0 3.5%;
+  font-size: $base-font-size 1em;
+}
+
+#hero-title {
+  color:white;
+  margin: 0 0 .5em;
+}
+
+#name {
+  font-weight: bold;
 }
