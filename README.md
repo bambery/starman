@@ -1,11 +1,10 @@
-# let's try one more time
+# Starman: An Exercise in Living Without Databases
 
-A simple static blogging site.
+This readme is in progress! Most doc is inline in the code at the moment. 
 
-Write entries in markdown, add metadata.
+Write content in markdown, add metadata, and the app will store everything in memcached. Since the app is going to live on Heroku, integration with S3 will be essential to ensure that the cache is not prematurely invalidated during app downtime and code pushes. This app uses Sprockets to compile and track freshness of all assets, including content assets.
 
-run the script
-* generates proxy files for sections
+* generates proxy files for content sections (folders on the file system) to cache them
 * compiles and fingerprints all assets (including blog entries)
 * uploads assets to the cloud
 * deletes out of date assets
@@ -18,8 +17,6 @@ represent the section in memcached.
 
 config for starman is inherited from cloud crooner
 
-## which content is grabbed is dependent on the helpers - use the helpers
-the helpers check if you are using remote, local_dynamic, or local_static in 
-the cloud crooner config. If local_dynamic, the manifest is bypassed. 
-The app cannot be run on local_dynamic without compiling the assets anyway, 
-because at the very least, the posts must be compiled. Might fix this.
+## Which content is grabbed is dependent on the helpers - use sprockets-helpers
+The helpers check if you are using remote or local_static in the cloud crooner config and generate paths appropriately. 
+
