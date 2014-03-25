@@ -26,6 +26,8 @@ CloudCrooner.configure do |config|
                                 stylesheets/layout.css 
                                 what_is_it/general_description.mdown
                                 what_is_it/test_support.mdown
+                                what_is_it/cloud_crooner.mdown
+                                what_is_it/outstanding_issues.mdown
                                )
 end
 

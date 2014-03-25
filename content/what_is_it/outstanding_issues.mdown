@@ -1,0 +1,27 @@
+Date: 01/01/2000
+Title: Outstanding Issues 
+Summary: Because no project is ever truly done... 
+
+*-----*-----*-----*
+
+#Outstanding Issues
+
+No project is ever 100% complete. I track my tasks in Omnifocus, but here are a few of the biggest issues:
+
+##front end
+* This app was functional with all tests passing in late March of 2014, and as such is still missing most of the content, notably the UX portion of the site, the personal crafting blog, and "about me". Most of the current content will also be refined and reworked.
+* Missing view helpers and a layout that can accomodate multiple sections.
+* Site is not mobile compatible and does not have a responsive layout.
+* Then finally can start writing my [cukes](cukes.info)!
+
+##backend
+* Post & Section lookup are looking on local file system, even when CloudCrooner.serve_assets="remote". The files exist on S3, but the models must check config before deciding where to read files from. Section contents are currently determined with a glob of directory contents, but since this is done during the proxy generation phase, the contents of the generated .json should be used instead. 
+* Clean up artifacts leftover from refactor (Content class, etc)
+* Gemify the app and remove functionality from the content 
+* Rewrite the README. It was deleted after a refactor that rendered its contents obsolete
+* benchmark app performance under various circumstances for fun
+* better defaults on missing metadata
+* Add browser & page caching
+* Date needs to be optional for layouts (like the current one) that do not require it. Offer another method of controlling ordering (or don't). 
+* simplecov integration to check test coverage completeness 
+* Look at travis ci again

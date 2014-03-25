@@ -1,0 +1,13 @@
+Date: 01/01/2012
+Title: Cloud Crooner 
+Summary: Cloud Crooner is a gem to manage a Sinatra app's assets with Sprockets and Amazon S3
+
+*-----*-----*-----*
+
+#Cloud Crooner
+
+[https://github.com/bambery/cloud_crooner](https://github.com/bambery/cloud_crooner)
+
+Cloud Crooner is a gem to manage a Sinatra application's assets with Sprockets and sync them with Amazon S3 with an emphasis on smart defaults. It utilizes the [fog](https://github.com/fog/fog) gem and configures [sprockets-helpers](https://github.com/petebrowne/sprockets-helpers) so that assets are always pulled from the right place. 
+
+Cloud Crooner is used extensively in Starman to navigate between memcached, the file system, and remote files to track content markdown files as well as the usual asset handling. The [README](https://github.com/bambery/cloud_crooner/blob/master/README.md) is fairly thorough for configuration and usage and there is a [sample application](https://github.com/bambery/cloud_crooner_example) to demonstrate usage of the gem, so I suggest taking a look at those to learn more. 

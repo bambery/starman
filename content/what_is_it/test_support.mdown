@@ -1,6 +1,6 @@
 Date: 01/01/2013
 Title: Test Support 
-Summary: 100 characters or less 
+Summary: Testing for Starman is done with Rspec & (soon) Cucumber 
 
 *-----*-----*-----*
 
