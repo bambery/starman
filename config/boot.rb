@@ -20,9 +20,13 @@ ENV['POSTS_DIR'] = 'content'
 ENV['TEST_MEMCACHED_SERVER'] = '127.0.0.1:11211'
 
 CloudCrooner.configure do |config|
-  config.serve_assets = "remote"
+  config.serve_assets = "local_static"
   config.asset_paths = %w( assets content )
-  config.assets_to_compile = %w( stylesheets/layout.css blog/baz.mdown )
+  config.assets_to_compile = %w( 
+                                stylesheets/layout.css 
+                                what_is_it/general_description.mdown
+                                what_is_it/test_support.mdown
+                               )
 end
 
 Starman::SectionProxy.create_section_proxies

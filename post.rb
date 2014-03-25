@@ -11,7 +11,7 @@ module Starman
     #
     def initialize(post_name)
       @section, @basename = get_section_and_basename(post_name)
-      @name = postname.gsub(/-[0-9a-z]*\.mdown/, "")
+      @name = post_name.gsub(/-[0-9a-z]*\.mdown/, "")
       @digest_name = post_name
       @metadata, @content = parse_file
     end

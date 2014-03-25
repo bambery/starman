@@ -2,7 +2,7 @@ Date: mm/dd/yyyy
 Title: 40 chars or less - shown in links 
 Summary: 100 characters or less 
 
-*-----*-----*
+*-----*-----*-----*
 
 #Title goes here
 

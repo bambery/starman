@@ -4,4 +4,7 @@
     = stylesheet_tag 'http://fonts.googleapis.com/css?family=Metrophobic'
     = stylesheet_tag 'stylesheets/layout'
   %body
-    = yield
+    #page
+      = partial :header
+      = yield
+      = partial :footer

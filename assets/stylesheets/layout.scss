@@ -48,7 +48,7 @@ p {
   }
 }
 
-.index {
+.page-content{
 
   .ux {
     width:50%;
@@ -82,6 +82,29 @@ h2 {
   border-bottom: 8px solid #ad5808;
 }
 
+.post {
+  em {
+    //font-style: normal;
+    font-weight: bold;
+  }
+  li {
+    padding: 5px;
+  }
+  p {
+    margin: 1em;
+  }
+}
+
+
+.branding {
+  //height: 5%;
+  padding: 1% 0 1%;
+  background-color: $hero-background;
+  border-bottom: 8px solid #ad5808;
+  color: $page-background;
+  margin: 0 0 2%;
+}
+
 #hero-title {
   color:$page-background;
   margin: 0 0 .8em;
@@ -89,4 +112,20 @@ h2 {
 
 #name {
   font-weight: bold;
+}
+
+.footer {
+  background-color: $hero-background;
+  color: $page-background;
+  border-top: 5px solid #ad5808;
+  margin: 15px 0 0 0;
+}
+.contact {
+  ul {
+    padding:0;
+  }
+  li {
+    display: inline-block;
+    margin: 10px 30px 10px 0;
+  }
 }

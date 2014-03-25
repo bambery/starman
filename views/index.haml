@@ -1,95 +1,71 @@
-#page
-  .index
-    %header.nav-bar
-      .nav-links.container
+.hero
+  .container
+    %h1#hero-title something wicked this way codes 
+    %p#name Lauren Wszolek
+    %p Ruby Developer, UX Engineer, Amateur Detective 
+.main.container
+  .main-content
+    .intro
+      %h2 This site is running on a Sinatra app called Starman. 
+      %h3 Let me walk you through what it does and how I built it.
+    .col-content
+      %ul.content-category
         %ul
-          %li resume
-          %li github
-          %li contact
-    .hero
-      .container
-        %h1#hero-title something wicked this way codes 
-        %p#name Lauren Wszolek
-        %p Ruby Developer, UX Engineer, Amateur Detective 
-    .main.container
-      .main-content
-        .intro
-          %h2 This site is running on a Sinatra app called Starman. 
-          %h3 Let me walk you through what it does and how I built it.
-        .col-content
-          %ul.content-category
-            %li.content-item Starman
-            %li A simple Ruby CMS application in a non-Rails environment without using a database.
-            %li Starman is an application that generates a blog-like site within a fixed layout based on the markdown files in a specified content directory. Link to cloud_crooner. Each sub-folder within becomes a "Section", and each markdown file within that becomes a "Post". When the site spins up on Heroku, Starman fingerprints any new or changed content and uploads it to Amazon S3, deleting old assets. When requested in the app, the files are parsed into metadata and content and placed in memcached with the fingerprinted filename as the key.  
+          %li testing
           %ul
-            %li The Guts 
+            %li Rspec: Testing an app that does not have a database posed a unique challenge, eventually solved with the use of the indispensible [link]test-construct, a gem which creates and destroys temporary files and directories on the filesystem. All test helpers currently live within spec_helper.rb, but the app is set up to share helpers between the two to dry up the tests. As I move to write cucumber tests, helpers will be moved into shared_test_helpers where they will be accessible from both testing frameworks. 
+            %li Factory Girl: Factories were used to generate the massive amount of edge cases possible while minimizing the amount of code I would need to maintain as the app evolved. Originally my first few test files were manually generated via yaml but this quickly proved too cumbersome and inefficient. Factory Girl provides the ability to generate the content of the test files while allowing me to create them within the test_contruct.
+            %li Cucumber: As the current layout, content, and view helpers were written in a 2-day span to get a low level app demo up, the cukes are pending a more thoughtful rewrite of the site.
+        %ul 
+          %li Cloud Crooner -- title
+          %ul
+            %li --summary Cloud Crooner is a gem to manage a Sinatra application's assets with Sprockets and sync them with Amazon S3. 
+            %li Cloud Crooner is a gem to manage a Sinatra application's assets with Sprockets and sync them with Amazon S3 with an emphasis on smart defaults. It utilizes the [add link]fog gem and configures [add link]sprockets-helpers so that assets are always pulled from the right place. Cloud Crooner is used extensively in Starman to navigate between memcached, the file system, and remote files to track content markdown files as well as the usual asset handling. The [add link]README is fairly thorough for configuration and usage and there is a [add link]sample application to demonstrate usage of the gem, so I suggest taking a look at those to learn more. 
+        %ul 
+          %li How Starman works -- title
+          %ul
+            %li Starman is an application that generates a blog-like site within a fixed layout based on the markdown files in a specified content directory. Link to cloud_crooner. Each sub-folder within becomes a "Section", and each markdown file within that becomes a "Post". When the site spins up on Heroku, Starman fingerprints any new or changed content and uploads it to Amazon S3, deleting old assets. When requested in the app, the files are parsed into metadata and content and placed in memcached with the fingerprinted filename as the key.  
+            %li Each folder within the content directory becomes a Section, and each markdown file within that becomes a Post in that Section. 
+            %li Subfolders within the content/ directory determine Sections.Content for each Section (as Posts) is placed in the section directory in the form of markdown files. Templates for files can be generated from the command line with a small bash script which have placeholders for metadata (title, date, summary) and the body of the content.
+            %li Assets and content are added to config/boot.rb 
+            %li In order to track the items in a Section, a proxy file (SectionProxy) is generated for Sprockets (workaround for https://github.com/sstephenson/sprockets/issues/452). 
+            %li Cloud Crooner compiles and fingerprints files listed in config/boot.rb, uploads them to Amazon S3, and configures helper methods to point to S3.
             %ul 
-              %li supporting technologies -- title
-              %ul 
-                %li Sinatra: The application is written in Sinatra. The concept of a personal site with only a few pages seemed too small for a Rails application, the only Ruby web framework I'd ever used. This was an excellent opportunity to shed all of the magic of Rails and build a webapp piece by piece with this new Sinatra thing all of the kids were talking about. 
-                %li No Database: Site content is written in Markdown files under the content/ directory. I wasn't keen on reading and writing to a database when I wanted to edit content and I also wanted to be able to write the content entirely offline with controlled releases. Inspired by gems such as [add link] Nesta, I'd initially intended to write a static site generator, but then I decided: Memcached.
-                %li Markdown: The content of the site is contained in individual [add link]markdown files processed with [add link] redcarpet. This allows for writing content in a somewhat more natural style without worrying about html markup. 
-                %li Memcached: Memcached is an in-memory key-value store that's blazing fast for saving and retrieving the results of more expensive operations. Surviving without a database means Memcached is indispensible, since reading in and processing system files is both resource and time expensive. Memcached is accessed using the [add link] Dalli gem and Starman::CachingHelpers.  Starman never expires cache entries, relying on fingerprinted assets to ensure that only fresh content is served to the user. 
-                %li Sprockets: Sprockets generates the manifest and handles all asset processing and tracking. Css and javascript is precompiled and fingerprinted along with the markdown files containing content. Configuration of Sprockets is handled within the [link]Cloud Crooner gem.
-                %li Heroku: Finding a provider to support the cutting edge Ruby & Rack features I required eventually led me to this popular hosting service. It comes with github integration and easy Rack configuration, but running it on the free tier comes with a speed cost on startup. Heroku also updates the mtime of all files after every push, even if unchanged, requiring me to host fingerprinted files, which use mtime as one factor in staleness, elsewhere. 
-                %li Amazon S3: Besides the necessity of hosting files separate from Heroku that would not be touched on each release, distributing assets across multiple servers decreases page load times and reduces requests to the core app - not essential for Starman, but a common technique in larger apps. Integration with S3 is handled by the [link]Cloud Crooner gem. 
+              %li When the a Section is requested in the browser
+              %li a helper method looks in the Sprockets manifest to see the most recent digest for that section.
+              %li Starman checks memcached for the key. If nil, it searches the compiled asset folder (see below Outstanding Issues: Backend #1) for the section directory and makes a listing of the contents of the Section (Posts), sorts the files (Posts) in order of given metadata date, adds the Posts to the cache, and places the Section in the cache.
+              %li Starman finds the layout with the same associated section name and returns with the generated page.
+            %ul 
+              %li When a post is requested in the browser
+              %li a helper method looks in the Sprockets manifest to see the most recent digest for that Post.
+              %li Starman checks memcached for the Post key. If nil, it opens the represenation of the Post in the compiled asset folder. The file is parsed for content and metadata and a new Post instance is created, then added to memcached. 
+              %li Starman finds the layout with the Post file for the associated Section and returns the markdown post body in html. 
+        %ul 
+          %li But Why? -- title
+          %ul
+            %li Starman is overengineered for its utilized purpose of supplying a small personal site: it would have been much easier to write out the individual pages in raw html. It was structured as an experiment to get me out of my coding comfort zone and get some hands on experience with areas I was less comfortable in, as well as giving me an opportunity to try out some technologies I was interested in, like serving assets via S3. It was highly successful in forcing me to abandon Rail's automagical aspects and get closer to the bones of Rack & Ruby. 
+            %li I'd worked on applications in the past that used memcached, but only in a way removed many times by layers of app-specific helpers.
+            %li Also, it was fun. I'm crazy better prepared to take on my next projects. I want to try rewriting the app in rails just to see how long it would take me.
+        %ul 
+          %li Outstanding Issues -- title
+          %ul
+            %li No project is ever 100% complete. I track my tasks in Omnifocus, but here are a few of the biggest issues:
+            %li front end
             %ul
-              %li testing
-              %ul
-                %li Rspec: Testing an app that does not have a database posed a unique challenge, eventually solved with the use of the indispensible [link]test-construct, a gem which creates and destroys temporary files and directories on the filesystem. All test helpers currently live within spec_helper.rb, but the app is set up to share helpers between the two to dry up the tests. As I move to write cucumber tests, helpers will be moved into shared_test_helpers where they will be accessible from both testing frameworks. 
-                %li Factory Girl: Factories were used to generate the massive amount of edge cases possible while minimizing the amount of code I would need to maintain as the app evolved. Originally my first few test files were manually generated via yaml but this quickly proved too cumbersome and inefficient. Factory Girl provides the ability to generate the content of the test files while allowing me to create them within the test_contruct.
-                %li Cucumber: As the current layout, content, and view helpers were written in a 2-day span to get a low level app demo up, the cukes are pending a more thoughtful rewrite of the site.
+              %li This app was functional with all tests passing in late March of 2014, and as such is still missing most of the content, notably the UX portion of the site, the personal crafting blog, and "about me".
+              %li Missing view helpers and a layout that can accomodate multiple sections.
+              %li Site is not mobile compatible and does not have a responsive layout.
+              %li Finally can start writing my <a href="cukes.info">cukes</a>!
+              %li simplecov integration to check test coverage completeness 
+              %li Look at travis ci again
+            %li backend
             %ul 
-              %li Cloud Crooner -- title
-              %ul
-                %li --summary Cloud Crooner is a gem to manage a Sinatra application's assets with Sprockets and sync them with Amazon S3. 
-                %li Cloud Crooner is a gem to manage a Sinatra application's assets with Sprockets and sync them with Amazon S3 with an emphasis on smart defaults. It utilizes the [add link]fog gem and configures [add link]sprockets-helpers so that assets are always pulled from the right place. Cloud Crooner is used extensively in Starman to navigate between memcached, the file system, and remote files to track content markdown files as well as the usual asset handling. The [add link]README is fairly thorough for configuration and usage and there is a [add link]sample application to demonstrate usage of the gem, so I suggest taking a look at those to learn more. 
-            %ul 
-              %li How Starman works -- title
-              %ul
-                %li Subfolders within the content/ directory determine Sections.Content for each Section (as Posts) is placed in the section directory in the form of markdown files. Templates for files can be generated from the command line with a small bash script which have placeholders for metadata (title, date, summary) and the body of the content.
-                %li Assets and content are added to config/boot.rb 
-                %li In order to track the items in a Section, a proxy file (SectionProxy) is generated for Sprockets (workaround for https://github.com/sstephenson/sprockets/issues/452). 
-                %li Cloud Crooner compiles and fingerprints files listed in config/boot.rb, uploads them to Amazon S3, and configures helper methods to point to S3.
-                %ul 
-                  %li When the a Section is requested in the browser
-                  %li a helper method looks in the Sprockets manifest to see the most recent digest for that section.
-                  %li Starman checks memcached for the key. If nil, it searches the compiled asset folder (see below Outstanding Issues: Backend #1) for the section directory and makes a listing of the contents of the Section (Posts), sorts the files (Posts) in order of given metadata date, adds the Posts to the cache, and places the Section in the cache.
-                  %li Starman finds the layout with the same associated section name and returns with the generated page.
-                %ul 
-                  %li When a post is requested in the browser
-                  %li a helper method looks in the Sprockets manifest to see the most recent digest for that Post.
-                  %li Starman checks memcached for the Post key. If nil, it opens the represenation of the Post in the compiled asset folder. The file is parsed for content and metadata and a new Post instance is created, then added to memcached. 
-                  %li Starman finds the layout with the Post file for the associated Section and returns the markdown post body in html. 
-            %ul 
-              %li But Why? -- title
-              %ul
-                %li Starman is overengineered for its utilized purpose of supplying a small personal site: it would have been much easier to write out the individual pages in raw html. It was structured as an experiment to get me out of my coding comfort zone and get some hands on experience with areas I was less comfortable in, as well as giving me an opportunity to try out some technologies I was interested in, like serving assets via S3. It was highly successful in forcing me to abandon Rail's automagical aspects and get closer to the bones of Rack & Ruby. 
-                %li I'd worked on applications in the past that used memcached, but only in a way removed many times by layers of app-specific helpers.
-                %li Also, it was fun. I'm crazy better prepared to take on my next projects. I want to try rewriting the app in rails just to see how long it would take me.
-            %ul 
-              %li Outstanding Issues -- title
-              %ul
-                %li No project is ever 100% complete. I track my tasks in Omnifocus, but here are a few of the biggest issues:
-                %li front end
-                %ul
-                  %li This app was functional with all tests passing in late March of 2014, and as such is still missing most of the content, notably the UX portion of the site, the personal crafting blog, and "about me".
-                  %li Missing view helpers and a layout that can accomodate multiple sections.
-                  %li Site is not mobile compatible and does not have a responsive layout.
-                  %li Finally can start writing my <a href="cukes.info">cukes</a>!
-                  %li simplecov integration to check test coverage completeness 
-                  %li Look at travis ci again
-                %li backend
-                %ul 
-                  %li Post & Section lookup are looking on local file system, even when CloudCrooner.serve_assets="remote". The files exist on S3, but the models must check config before deciding where to read files from. Section contents are currently determined with a glob of directory contents, but since this is done during the proxy generation phase, the contents of the generated .json should be used instead. 
-                  %li Clean up artifacts leftover from refactor (Content class, etc)
-                  %li Gemify the app and remove functionality from the content 
-                  %li Rewrite the README. It was deleted after a refactor that rendered its contents obsolete
-                  %li benchmark app performance under various circumstances for fun
-                  %li better defaults on missing metadata
-                  %li Add browser & page caching
-                  %li Date needs to be optional for layouts (like the current one) that do not require it. Offer another method of controlling ordering (or don't). 
-    .contact.container
-      %ul
-        %li#phone 1 312 545 0976
-        %li#email lwszolek@gmail.com
+              %li Post & Section lookup are looking on local file system, even when CloudCrooner.serve_assets="remote". The files exist on S3, but the models must check config before deciding where to read files from. Section contents are currently determined with a glob of directory contents, but since this is done during the proxy generation phase, the contents of the generated .json should be used instead. 
+              %li Clean up artifacts leftover from refactor (Content class, etc)
+              %li Gemify the app and remove functionality from the content 
+              %li Rewrite the README. It was deleted after a refactor that rendered its contents obsolete
+              %li benchmark app performance under various circumstances for fun
+              %li better defaults on missing metadata
+              %li Add browser & page caching
+              %li Date needs to be optional for layouts (like the current one) that do not require it. Offer another method of controlling ordering (or don't). 
+
