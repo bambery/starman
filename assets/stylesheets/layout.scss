@@ -98,7 +98,28 @@ h2 {
   }
 }
 
-
+.section-post {
+  border:1px solid;
+  -moz-border-radius:25px;
+  border-radius:25px;
+  max-width:80%;
+  margin: 10px auto;
+  ul {
+    margin: 5%;
+    padding: 0;
+    list-style-type:none;
+  }
+  li {
+  }
+  .title {
+    display: block;
+    font-size: 1.5em;
+  }
+  .readmore {
+    margin: 0 40px 0 0;
+    text-align: right;
+  }
+}
 .branding {
   //height: 5%;
   padding: 1% 0 1%;
@@ -106,6 +127,10 @@ h2 {
   border-bottom: 8px solid #ad5808;
   color: $page-background;
   margin: 0 0 2%;
+  a { 
+    text-decoration:none;
+    color: $page-background;
+  }
 }
 
 #hero-title {

@@ -40,6 +40,8 @@ module Starman
     end
     
     get '/' do
+      # this is a hack to get the temp site up
+      @section = get_or_add_section_to_cache('what_is_it')
       haml :index
     end
 

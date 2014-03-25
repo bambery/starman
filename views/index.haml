@@ -9,37 +9,11 @@
       %h2 This site is running on a Sinatra app called Starman. 
       %h3 Let me walk you through what it does and how I built it.
     .col-content
-      %ul.content-category
-        %ul
-          %li testing
+      -@section.posts.each do |post| 
+        .section-post
+          -section_post = get_or_add_post_to_cache(post, true) 
           %ul
-            %li         %ul 
-          %li Cloud Crooner -- title
-          %ul
-            %li --summary Cloud Crooner is a gem to manage a Sinatra application's assets with Sprockets and sync them with Amazon S3. 
-            %li         %ul 
-          %li How Starman works -- title
-          %ul
-            %li Starman is an application that generates a blog-like site within a fixed layout based on the markdown files in a specified content directory. Link to cloud_crooner. Each sub-folder within becomes a "Section", and each markdown file within that becomes a "Post". When the site spins up on Heroku, Starman fingerprints any new or changed content and uploads it to Amazon S3, deleting old assets. When requested in the app, the files are parsed into metadata and content and placed in memcached with the fingerprinted filename as the key.  
-            %li Each folder within the content directory becomes a Section, and each markdown file within that becomes a Post in that Section. 
-            %li Subfolders within the content/ directory determine Sections.Content for each Section (as Posts) is placed in the section directory in the form of markdown files. Templates for files can be generated from the command line with a small bash script which have placeholders for metadata (title, date, summary) and the body of the content.
-            %li Assets and content are added to config/boot.rb 
-            %li In order to track the items in a Section, a proxy file (SectionProxy) is generated for Sprockets (workaround for https://github.com/sstephenson/sprockets/issues/452). 
-            %li Cloud Crooner compiles and fingerprints files listed in config/boot.rb, uploads them to Amazon S3, and configures helper methods to point to S3.
-            %ul 
-              %li When the a Section is requested in the browser
-              %li a helper method looks in the Sprockets manifest to see the most recent digest for that section.
-              %li Starman checks memcached for the key. If nil, it searches the compiled asset folder (see below Outstanding Issues: Backend #1) for the section directory and makes a listing of the contents of the Section (Posts), sorts the files (Posts) in order of given metadata date, adds the Posts to the cache, and places the Section in the cache.
-              %li Starman finds the layout with the same associated section name and returns with the generated page.
-            %ul 
-              %li When a post is requested in the browser
-              %li a helper method looks in the Sprockets manifest to see the most recent digest for that Post.
-              %li Starman checks memcached for the Post key. If nil, it opens the represenation of the Post in the compiled asset folder. The file is parsed for content and metadata and a new Post instance is created, then added to memcached. 
-              %li Starman finds the layout with the Post file for the associated Section and returns the markdown post body in html. 
-        %ul 
-          %li But Why? -- title
-          %ul
-            %li Starman is overengineered for its utilized purpose of supplying a small personal site: it would have been much easier to write out the individual pages in raw html. It was structured as an experiment to get me out of my coding comfort zone and get some hands on experience with areas I was less comfortable in, as well as giving me an opportunity to try out some technologies I was interested in, like serving assets via S3. It was highly successful in forcing me to abandon Rail's automagical aspects and get closer to the bones of Rack & Ruby. 
-            %li I'd worked on applications in the past that used memcached, but only in a way removed many times by layers of app-specific helpers.
-            %li Also, it was fun. I'm crazy better prepared to take on my next projects. I want to try rewriting the app in rails just to see how long it would take me.
-
+            %li.title= section_post.title
+            %li= section_post.summary
+            %li.readmore
+              %a{:href=>"#{section_post.name}"}Read More >>

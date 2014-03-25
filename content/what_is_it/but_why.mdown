@@ -1,0 +1,17 @@
+Date: 01/01/2010
+Title: But Why?
+Summary: If this seems over-engineered for a simple site with a handful of pages, you're not wrong. 
+
+*-----*-----*-----*
+
+#Yes But.... Why Did You Do This?
+
+Starman is over-engineered for its purpose of supplying a small personal site: it would have been much easier to write out the individual pages in raw html. 
+
+It was structured as an experiment to get me out of my coding comfort zone and get some hands on experience with areas I was less comfortable in, as well as giving me an opportunity to try out some technologies that interest me, like serving assets via S3. It was highly successful in forcing me to abandon Rail's automagical aspects and get closer to the bones of Rack & Ruby. 
+
+For example, I'd worked on applications in the past that used memcached, but only in a way removed many times by layers of app-specific helpers.
+
+Also, it was fun! I'm crazy better prepared to take on my next projects. I want to try rewriting the app in rails just to see how long it would take me.
+
+Eventually I'll compile a list of "lessons I learned from Starman", but I think the #1 takeaway was how to crawl other people's code to figure out how to get what I want (Me? A Sprockets expert? Let me tell you about the asset pipeline...), documented or not, or occasionally how to debug other people's code and read their test suites to determine actual expected (or at least, expected at the time of test writing) functionality. 

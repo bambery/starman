@@ -1,6 +1,6 @@
 Date: 01/01/2012
 Title: Cloud Crooner 
-Summary: Cloud Crooner is a gem to manage a Sinatra app's assets with Sprockets and Amazon S3
+Summary: A gem to manage a Sinatra app's assets with Sprockets and Amazon S3
 
 *-----*-----*-----*
 
