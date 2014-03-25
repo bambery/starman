@@ -1,15 +1,159 @@
-// Base variables and mixins pulled out for easy access 
-//@import "variables";
-@import "mixins";
+// This is css born out of haste & necessity
+// Don't hate
 //
 // CSS reset 
 @import "normalize";
+// Base variables and mixins pulled out for easy access 
+@import "variables";
+@import "mixins";
+
+$base-font-size: .8em;
+$hero-background:#9b1500;
+$page-background: #dfe6df;
 
 #page {
-  margin: 30px auto;
-  width: 90%;
+  @include box-sizing(border-box);
+  .container {
+    width: 80%;
+    margin: 0 auto 0;
+  }
+}
+
+a {
+  color:#26788c;
+}
+div, ul, li, h1, h2, h3, h4, h5 {
+  margin: 0;
+}
+
+body {
+  background-color: $page-background;
+  font-family:'Metrophobic',Helvetica,Arial,sans-serif;
+}
+
+p {
+  margin: 0 0 $base-font-size/3;
+}
+.nav-bar {
+  position: relative;
+  display: block;
+  clear:both;
+  z-index: 1000;
+  border: 0;
+  padding: 0;
+  
+  ul {
+    padding:0;
+  }
+
+  li {
+    font-size: $base-font-size * .9;
+    display: inline-block;
+    margin: .5em 1em .5em 0;
+  }
+}
+
+.page-content{
+
+  .ux {
+    width:50%;
+    background-color:pink;
+  }
+
+  .col-content {
+    max-width: 800px;
+  }
+
 }
 
 h1 {
-  color:blue;
+  font-size: $base-font-size * 3;
+}
+
+h2 {
+  font-size: $base-font-size *1.8;
+}
+
+.intro {
+  margin: 1em 0;
+}
+
+.hero {
+  background-color: $hero-background;
+  color: lighten($hero-background, 50%); 
+  padding: 2% 0 2%;
+  font-size: $base-font-size 1em;
+  border-bottom: 8px solid #ad5808;
+}
+
+.post {
+  em {
+    font-weight: bold;
+  }
+  li {
+    padding: 5px;
+  }
+  p {
+    margin: 1em;
+  }
+}
+
+.section-post {
+  border:1px solid;
+  -moz-border-radius:25px;
+  border-radius:25px;
+  max-width:80%;
+  margin: 10px auto;
+  ul {
+    margin: 5%;
+    padding: 0;
+    list-style-type:none;
+  }
+  li {
+  }
+  .title {
+    display: block;
+    font-size: 1.5em;
+  }
+  .readmore {
+    margin: 0 40px 0 0;
+    text-align: right;
+  }
+}
+.branding {
+  //height: 5%;
+  padding: 1% 0 1%;
+  background-color: $hero-background;
+  border-bottom: 8px solid #ad5808;
+  color: $page-background;
+  margin: 0 0 2%;
+  a { 
+    text-decoration:none;
+    color: $page-background;
+  }
+}
+
+#hero-title {
+  color:$page-background;
+  margin: 0 0 .8em;
+}
+
+#name {
+  font-weight: bold;
+}
+
+.footer {
+  background-color: $hero-background;
+  color: $page-background;
+  border-top: 5px solid #ad5808;
+  margin: 15px 0 0 0;
+}
+.contact {
+  ul {
+    padding:0;
+  }
+  li {
+    display: inline-block;
+    margin: 10px 30px 10px 0;
+  }
 }

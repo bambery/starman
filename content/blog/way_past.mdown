@@ -1,9 +1,0 @@
-Date: 01/01/2001
-Summary: 100 characters or less 
-
-*-----*-----*
-
-#Title goes here
-
-Content goes here.
-

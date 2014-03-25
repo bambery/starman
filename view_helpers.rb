@@ -4,6 +4,5 @@ module Starman
       post.metadata["date"].strftime("%m-%d-%Y")
     end
 
-
   end
 end

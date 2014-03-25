@@ -3,6 +3,7 @@ require 'dalli'
 require 'sass'
 require 'sinatra/base'
 require 'sinatra/sprockets-helpers'
+require 'sinatra/partial'
 require 'redcarpet'
 
 require File.expand_path('post', File.dirname(__FILE__))
@@ -15,6 +16,8 @@ require File.expand_path('content', File.dirname(__FILE__))
 
 module Starman
   class App < Sinatra::Base
+
+    register Sinatra::Partial
 
     helpers do
       include Starman::CachingHelpers 
@@ -37,7 +40,9 @@ module Starman
     end
     
     get '/' do
-      haml :index 
+      # this is a hack to get the temp site up
+      @section = get_or_add_section_to_cache('what_is_it')
+      haml :index
     end
 
     get '/section' do

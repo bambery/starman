@@ -1,0 +1,21 @@
+Date: 01/01/2011 
+Title: How Does it Work? 
+Summary: A brief overview of the happy path 
+
+*-----*-----*-----*
+
+#How Starman Works
+
+1. Starman is an application that generates a blog-like site within a fixed layout based on the markdown files in a specified content directory. Each sub-folder within becomes a "Section", and each markdown file within that becomes a "Post". 
+2. Templates for the markdown files can be generated from the command line with a small bash script (bin/starman help) which have placeholders for metadata (title, date, summary) and the body of the content. Templates can be created for different Sections of posts.
+3. Assets and content are added to CloudCrooner.assets\_to\_compile in config/boot.rb 
+4. In order to track the items in a Section, a proxy file (SectionProxy) is generated for Sprockets (workaround for [https://github.com/sstephenson/sprockets/issues/452](https://github.com/sstephenson/sprockets/issues/452). 
+5. Cloud Crooner compiles and fingerprints files listed in config/boot.rb, uploads them to Amazon S3, and configures helper methods to point to S3. 
+6. When the a Section is requested in the browser
+  * a helper method looks in the Sprockets manifest to see the most recent digest for that section.
+  * Starman checks memcached for the key. If nil, it searches the compiled asset folder (see below Outstanding Issues: Backend #1) for the section directory and makes a listing of the contents of the Section (Posts), sorts the files (Posts) in order of given metadata date, adds the Posts to the cache, and places the Section in the cache with the digest proxy name as the key.
+  * Starman finds the layout with the same associated section name and returns with the generated page.
+7. When a post is requested in the browser
+  * a helper method looks in the Sprockets manifest to see the most recent digest for that Post.
+  * Starman checks memcached for the Post key. If nil, it opens the represenation of the Post in the compiled asset folder. The file is parsed for content and metadata and a new Post instance is created, then added to memcached with the digest file name as the key. 
+  * Starman finds the layout with the Post file for the associated Section and returns the markdown post body in html. 

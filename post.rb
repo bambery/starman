@@ -11,7 +11,7 @@ module Starman
     #
     def initialize(post_name)
       @section, @basename = get_section_and_basename(post_name)
-      @name = postname.gsub(/-[0-9a-z]*\.mdown/, "")
+      @name = post_name.gsub(/-[0-9a-z]*\.mdown/, "")
       @digest_name = post_name
       @metadata, @content = parse_file
     end
@@ -43,10 +43,10 @@ module Starman
 
       file_data = read_post_file 
       # TODO: better check for proper formatting
-      unless file_data.include?("*-----*-----*")
+      unless file_data.include?("*-----*-----*-----*")
         raise Starman::FormattingError.new(@digest_name)
       end
-      metadata_text, content = file_data.split("*-----*-----*")
+      metadata_text, content = file_data.split("*-----*-----*-----*")
       parse_file_data(metadata_text.strip, content.strip)
     end
 

@@ -1,21 +1,19 @@
-.page
-  %header.page-header
-    %h1 Something Wicked This Way Codes 
-  .hero
-    .hero-title
-      %p Ux title
-    .hero-subtitle
-      %p blah blah blah
-  .intro-text
-    %p See more about how I made this site
-    .buttons-nav
-      %a.dev-button Dev
-        
-      %a.ux-button UX
-      %a.about-me-button About Me
-  .contact
-    %ul
-      %li#phone 1 312 545 0976
-      %li#email lwszolek@gmail.com
-
-
+.hero
+  .container
+    %h1#hero-title something wicked this way codes 
+    %p#name Lauren Wszolek
+    %p Ruby Developer, UX Engineer, Amateur Detective 
+.main.container
+  .main-content
+    .intro
+      %h2 This site is running on a Sinatra app called Starman. 
+      %h3 Let me walk you through what it does and how I built it.
+    .col-content
+      -@section.posts.each do |post| 
+        .section-post
+          -section_post = get_or_add_post_to_cache(post, true) 
+          %ul
+            %li.title= section_post.title
+            %li= section_post.summary
+            %li.readmore
+              %a{:href=>"#{section_post.name}"}Read More >>
