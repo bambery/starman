@@ -1,0 +1,13 @@
+Date: 03/25/2014
+Title: Starman
+Summary: 100 characters or less 
+
+*-----*-----*--*
+
+#Starman is an experiment
+
+I wanted to have a website, but I didn't want it to be just static content. I could have built a Rails application, but this seemed largely overkill for a site that would allow no interactions and would consist of a handful of pages. Inspired by I decided to try a small Sinatra site
+
+The intention is to have multiple categories of content, for example, a portfolio and a blog
+
+It is 95% code complete on the back end with all tests passing, though it needs some cleanup, has a few low level outstanding bugs, and requires additional front end support. The current site was quickly assembled to demonstrate basic functionality.

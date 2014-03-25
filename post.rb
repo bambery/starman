@@ -43,10 +43,10 @@ module Starman
 
       file_data = read_post_file 
       # TODO: better check for proper formatting
-      unless file_data.include?("*-----*-----*")
+      unless file_data.include?("*-----*-----*-----*")
         raise Starman::FormattingError.new(@digest_name)
       end
-      metadata_text, content = file_data.split("*-----*-----*")
+      metadata_text, content = file_data.split("*-----*-----*-----*")
       parse_file_data(metadata_text.strip, content.strip)
     end
 

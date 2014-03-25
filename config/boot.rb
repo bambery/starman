@@ -20,7 +20,7 @@ ENV['POSTS_DIR'] = 'content'
 ENV['TEST_MEMCACHED_SERVER'] = '127.0.0.1:11211'
 
 CloudCrooner.configure do |config|
-  config.serve_assets = "local_static"
+  config.serve_assets = "remote"
   config.asset_paths = %w( assets content )
   config.assets_to_compile = %w( stylesheets/layout.css blog/baz.mdown )
 end

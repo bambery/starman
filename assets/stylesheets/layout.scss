@@ -17,16 +17,17 @@ $page-background: #dfe6df;
   }
 }
 
-div, ul, li, h1 {
+div, ul, li, h1, h2, h3, h4, h5 {
   margin: 0;
 }
 
 body {
   background-color: $page-background;
+  font-family:'Metrophobic',Helvetica,Arial,sans-serif;
 }
 
 p {
-  margin: 0 0 $base-font-size/2;
+  margin: 0 0 $base-font-size/3;
 }
 .nav-bar {
   position: relative;
@@ -49,11 +50,6 @@ p {
 
 .index {
 
-  .dev {
-    padding: 1% 0 1%;
-    margin: auto;
-  }
-
   .ux {
     width:50%;
     background-color:pink;
@@ -66,21 +62,29 @@ p {
 
 }
 
-
 h1 {
   font-size: $base-font-size * 3;
+}
+
+h2 {
+  font-size: $base-font-size *1.8;
+}
+
+.intro {
+  margin: 1em 0;
 }
 
 .hero {
   background-color: $hero-background;
   color: lighten($hero-background, 50%); 
-  padding: 3.5% 0 3.5%;
+  padding: 2% 0 2%;
   font-size: $base-font-size 1em;
+  border-bottom: 8px solid #ad5808;
 }
 
 #hero-title {
-  color:white;
-  margin: 0 0 .5em;
+  color:$page-background;
+  margin: 0 0 .8em;
 }
 
 #name {
