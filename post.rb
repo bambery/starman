@@ -9,6 +9,10 @@ module Starman
     # The posts's digest name is also its memcached key: 
     #   [section]/[digest file name].mdown
     #
+    #   FIXME: post and sections are initialized with different number of 
+    #   arguments, but post still needs @name, just strips it rather than 
+    #   expects it passed in
+    #
     def initialize(post_name)
       @section, @basename = get_section_and_basename(post_name)
       @name = post_name.gsub(/-[0-9a-z]*\.mdown/, "")

@@ -8,7 +8,7 @@ FactoryGirl.define do
       date "04/11/2013"
       title "A magnificent post!"
       summary "a foo bar baz"
-      divider "*-----*-----*"
+      divider "*-----*-----*-----*"
       content "#Test Post Foo\n\nHere's some content for ya guv!"
       extras nil
 

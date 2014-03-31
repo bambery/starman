@@ -69,6 +69,7 @@ describe Starman do
       end
 
       it 'errors on post without manifest entry and does not add it to the cache' do
+#        expect {testapp.new.get_or_add_post_to_cache("fake/post")}.to raise_error(Starman::DigestNotFoundError) 
         expect {testapp.new.get_or_add_post_to_cache("fake/post")}.to raise_error(Starman::DigestNotFoundError) 
         # not added to cache
         (@set_count).should eq(@memcached.stats[@test_memcached_server]["cmd_set"].to_i)
@@ -160,7 +161,7 @@ describe Starman do
           @get_misses = @memcached.stats[@test_memcached_server]["get_misses"].to_i
           @get_hits= @memcached.stats[@test_memcached_server]["get_hits"].to_i
           ['blog/best_post', 'blog/second_best', 'blog/ok_post'].each do |post_name|
-            digest_name = testapp.new.newest_post_digest(post_name)
+            digest_name = Starman::Content.newest_post_digest(post_name)
             expect(@memcached.get(digest_name)).to eq(nil)
           end
 
@@ -173,7 +174,7 @@ describe Starman do
           @get_misses = @memcached.stats[@test_memcached_server]["get_misses"].to_i
           @get_hits= @memcached.stats[@test_memcached_server]["get_hits"].to_i
           ['blog/best_post', 'blog/second_best', 'blog/ok_post'].each do |post_name|
-            digest_name = testapp.new.newest_post_digest(post_name)
+            digest_name = Starman::Content.newest_post_digest(post_name)
             expect(@memcached.get(digest_name)).to be_an_instance_of(Starman::Post) 
           end
 

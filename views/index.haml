@@ -11,7 +11,7 @@
     .col-content
       -@section.posts.each do |post| 
         .section-post
-          -section_post = get_or_add_post_to_cache(post, true) 
+          -section_post = get_or_add_post_to_cache(post) 
           %ul
             %li.title= section_post.title
             %li= section_post.summary
