@@ -17,7 +17,6 @@ module Starman
     # reading and parsing posts is expensive.
     # 
     def get_posts
-      raise Starman::SectionNotFound.new(name) unless Section.exists?(name)
       posts = Dir.glob(File.join(Content.raw_content_dir, @name, '/*')) 
       # remove content dir in path to return hash keys
       posts.map! { |post| post.gsub(Content.compiled_content_dir + "/", "") }
@@ -25,10 +24,5 @@ module Starman
       posts.keep_if { |post| Content.newest_post_digest(post) }
     end
 
-    # FIXME: will not work with local_dynamic
-    def self.exists?(section)
-      return Dir.exists?(File.join(Content.compiled_content_dir, section))
-    end
-   
   end
 end
