@@ -13,18 +13,18 @@ module Starman
     #   arguments, but post still needs @name, just strips it rather than 
     #   expects it passed in
     #
-    def initialize(post_name)
-      @section, @basename = get_section_and_basename(post_name)
-      @name = post_name.gsub(/-[0-9a-z]*\.mdown/, "")
-      @digest_name = post_name
+    def initialize(digest_post_name)
+      @section, @basename = get_section_and_basename(digest_post_name)
+      @name = digest_post_name.gsub(/-[0-9a-z]*\.mdown/, "")
+      @digest_name = digest_post_name
       @metadata, @content = parse_file
     end
 
-    def get_section_and_basename(post_name)
-      if /^\w+\/\w+-[0-9a-z]*\.mdown/ === post_name 
-        post_name.split('/')
+    def get_section_and_basename(digest_post_name)
+      if /^\w+\/\w+-[0-9a-z]*\.mdown/ === digest_post_name 
+        digest_post_name.split('/')
       else
-       raise Starman::NameError.new(post_name)
+       raise Starman::NameError.new(digest_post_name)
       end
     end
 
