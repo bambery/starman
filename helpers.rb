@@ -1,8 +1,3 @@
-require_relative 'post'
-require_relative 'section'
-require_relative 'starman_error'
-require_relative 'content'
-
 module Starman
   module CachingHelpers 
 
