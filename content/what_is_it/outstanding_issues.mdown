@@ -25,3 +25,5 @@ No project is ever 100% complete. I track my tasks in Omnifocus, but here are a 
 * Date needs to be optional for layouts (like the current one) that do not require it. Offer another method of controlling ordering (or don't). 
 * simplecov integration to check test coverage completeness 
 * Look at travis ci again
+* do not create a proxy for the proxy folder
+* need a way to set exclusions (ie for robots.txt, favicon.ico, etc)

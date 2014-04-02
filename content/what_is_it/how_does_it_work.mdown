@@ -13,7 +13,7 @@ Summary: A brief overview of the happy path
 5. Cloud Crooner compiles and fingerprints files listed in config/boot.rb, uploads them to Amazon S3, and configures helper methods to point to S3. 
 6. When the a Section is requested in the browser
   * a helper method looks in the Sprockets manifest to see the most recent digest for that section.
-  * Starman checks memcached for the key. If nil, it searches the compiled asset folder (see below Outstanding Issues: Backend #1) for the section directory and makes a listing of the contents of the Section (Posts), sorts the files (Posts) in order of given metadata date, adds the Posts to the cache, and places the Section in the cache with the digest proxy name as the key.
+  * Starman checks memcached for the key. If nil, it searches the compiled asset folder (see [Outstanding Issues](outstanding_issues): Backend #1) for the section directory and makes a listing of the contents of the Section (Posts), sorts the files (Posts) in order of given metadata date, adds the Posts to the cache, and places the Section in the cache with the digest proxy name as the key.
   * Starman finds the layout with the same associated section name and returns with the generated page.
 7. When a post is requested in the browser
   * a helper method looks in the Sprockets manifest to see the most recent digest for that Post.
