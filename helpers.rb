@@ -1,3 +1,8 @@
+require_relative 'post'
+require_relative 'section'
+require_relative 'starman_error'
+require_relative 'content'
+
 module Starman
   module CachingHelpers 
 
@@ -14,7 +19,7 @@ module Starman
       # For better or worse, I've just enforced that all posts must be .mdown
       # key also now has .mdown at the end - will have consequences 
       post_digest_path = Content.newest_post_digest(post_path)
-      raise Starman::DigestNotFoundError.new(post_path) unless post_digest_path
+      raise DigestNotFoundError.new(post_path) unless post_digest_path
       post = settings.memcached.get(post_digest_path)
       if post.nil? 
         post = Post.new(post_digest_path)
@@ -30,7 +35,7 @@ module Starman
     # returns an array of fingerprinted memcached keys pointing to posts
     #
     def get_or_add_section_to_cache(section_name)
-      raise Starman::DigestNotFound.new(section_name) unless section_digest = Content.newest_section_digest(section_name)
+      raise DigestNotFoundError.new(section_name) unless section_digest = Content.newest_section_digest(section_name)
       section = settings.memcached.get(section_digest)
       if section.nil?
         new_section = Section.new(section_name, section_digest)
