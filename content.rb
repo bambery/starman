@@ -20,8 +20,6 @@ module Starman
     ##
     # Gather the content requested by the glob minus directories 
     #
-    # FIXME: move into Section class
-    #
     def self.get_content(directory_glob)
       content = Dir.glob(directory_glob)
       # exclude directories
@@ -32,6 +30,7 @@ module Starman
 
     ##
     # location of unprocessed "raw" content
+    # FIXME: not my favorite thing.
     #
     def self.raw_content_dir
       File.join(__dir__, 'content')
@@ -44,6 +43,7 @@ module Starman
     def self.newest_post_digest(post_path)
 #      manifest.assets[post_path + '.mdown'] ||
 #        (raise Starman::DigestNotFoundError.new(post_path))
+      #        optionall add the mdown?
       manifest.assets[post_path + '.mdown'] 
     end
 

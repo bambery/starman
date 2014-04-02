@@ -18,12 +18,16 @@ module Starman
     # reading and parsing posts is expensive.
     # 
     def get_posts
-      raise Starman::SectionNotFound.new(section_name) unless Section.exists?(section_name)
-      posts = Dir.glob(File.join(Content.raw_content_dir, @name, '/*')) 
-      # remove content dir in path to return hash keys
-      posts.map! { |post| post.gsub(Content.compiled_content_dir + "/", "") }
+      raise Starman::SectionNotFound.new(@name) unless Section.exists?(@name)
+      posts = Dir.glob(File.join(Content.raw_content_dir, @name, '/*'))
+      # exclude directories 
+      posts.select { |item| File.file?(item) }
+      # remove content dir in path and file ext
+      posts.map!{|post| post.gsub(Content.raw_content_dir + "/", "").chomp('.mdown')}
       # Remove files without an entry in the manifest. 
       posts.keep_if { |post| Content.newest_post_digest(post) }
+      raise Starman::SectionEmpty.new(@name) if posts.size == 0 
+      return posts
     end
 
     ##

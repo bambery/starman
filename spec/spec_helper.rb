@@ -44,9 +44,9 @@ RSpec.configure do |config|
 
   def sample_files(construct)
     lambda { |c|
-      c.file('public/assets/blog/p1-123.mdown')
-      c.file('public/assets/blog/p2-123.mdown')
-      c.file('public/assets/blog/p3-123.mdown')
+      c.file('content/blog/p1.mdown')
+      c.file('content/blog/p2.mdown')
+      c.file('content/blog/p3.mdown')
     }.call(construct)
   end
 

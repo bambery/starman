@@ -146,8 +146,8 @@ describe Starman do
         end # context
       end # it
 
-      it "adds a section's posts to the cache" do
-        within_construct(keep_on_error: true) do |c|
+      it "adds a section's posts to the cache", :add_sec => true do
+        within_construct do |c|
           CloudCrooner.prefix = 'section'
           section_name = "blog"
           c.file("section/blog/best_post.mdown", FactoryGirl.create(:post_data, :best_post))
@@ -197,11 +197,11 @@ describe Starman do
 
           section = Starman::Section.new("blog", "blog-proxy-fake.json")
           # posts are unsorted on creation of the section
-          expect(section.posts).to eq([testapp.new.newest_post_digest('blog/earliest'), testapp.new.newest_post_digest('blog/middle'), testapp.new.newest_post_digest('blog/most_recent')])
+          expect(section.posts).to eq(['blog/earliest', 'blog/middle', 'blog/most_recent'])
 
           # posts are sorted after helper is run
           section = testapp.new.get_or_add_section_to_cache(section_name)
-          expect(section.posts).to eq([testapp.new.newest_post_digest('blog/most_recent'), testapp.new.newest_post_digest('blog/middle'), testapp.new.newest_post_digest('blog/earliest')])
+          expect(section.posts).to eq(['blog/most_recent', 'blog/middle', 'blog/earliest'])
         end # context
       end # sorts posts
 

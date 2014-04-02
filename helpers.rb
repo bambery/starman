@@ -30,10 +30,11 @@ module Starman
     # returns an array of fingerprinted memcached keys pointing to posts
     #
     def get_or_add_section_to_cache(section_name)
-      section_digest = Content.newest_section_digest(section_name)
+      raise Starman::DigestNotFound.new(section_name) unless section_digest = Content.newest_section_digest(section_name)
       section = settings.memcached.get(section_digest)
       if section.nil?
         new_section = Section.new(section_name, section_digest)
+        # this is not my most favorite thing
         new_section.posts = sort_posts_by_date_and_add_to_cache(new_section.posts)
         settings.memcached.set(section_digest, new_section)
         section = new_section 
@@ -48,10 +49,10 @@ module Starman
     # look at 
     # http://awaxman11.github.io/blog/2013/10/11/sorting-a-rails-resource-based-on-a-calculated-value/
     def sort_posts_by_date_and_add_to_cache(sec_posts)
-      sec_posts.map! { |digest_post_name| get_or_add_post_to_cache(digest_post_name) }
+      sec_posts.map! { |post_name| get_or_add_post_to_cache(post_name) }
       sec_posts.sort! { |a,b| b.date <=> a.date }
       # only return the array of names
-      sec_posts.map! { |post| post.digest_name }
+      sec_posts.map! { |post| post.name }
       return sec_posts
     end
 

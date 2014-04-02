@@ -10,6 +10,9 @@ describe Starman::Section, "#initialize" do
     it 'assigns the name' do
       within_construct do |c|
         sample_files(c)
+        CloudCrooner.prefix = 'content'
+        Starman::Content.stub(:raw_content_dir).and_return(File.join(c, 'content'))
+        CloudCrooner.manifest.compile('blog/p1.mdown', 'blog/p2.mdown', 'blog/p3.mdown')
         @blog = Starman::Section.new("blog", "blog-proxy-124.json")
         expect(@blog.name).to eq("blog")
       end # construct
@@ -18,32 +21,52 @@ describe Starman::Section, "#initialize" do
     it 'assigns the digest file' do
       within_construct do |c|
         sample_files(c)
+        CloudCrooner.prefix = 'content'
+        Starman::Content.stub(:raw_content_dir).and_return(File.join(c, 'content'))
+        CloudCrooner.manifest.compile('blog/p1.mdown', 'blog/p2.mdown', 'blog/p3.mdown')
         @blog = Starman::Section.new("blog", "blog-proxy-124.json")
         expect(@blog.digest_name).to eq("blog-proxy-124.json")
       end # construct
     end
 
-    it 'assigns the posts' do
+    it 'gathers an array of the compiled post names under the section' do
       within_construct do |c|
         sample_files(c)
+        CloudCrooner.prefix = 'content'
+        Starman::Content.stub(:raw_content_dir).and_return(File.join(c, 'content'))
+        CloudCrooner.manifest.compile('blog/p1.mdown', 'blog/p2.mdown', 'blog/p3.mdown')
         @blog = Starman::Section.new("blog", "blog-proxy-124.json")
-        expect(@blog.posts).to eq(["blog/p1-123.mdown", "blog/p2-123.mdown", "blog/p3-123.mdown"])
+        expect(@blog.posts).to eq(["blog/p1", "blog/p2", "blog/p3"])
       end #construct
     end
 
-    it 'excludes any dotfiles in the posts listing' do
+    it 'does not grab posts under the section which have not been compiled' do
       within_construct do |c|
         sample_files(c)
-        c.file('public/assets/blog/.dot_file')
+        CloudCrooner.prefix = 'content'
+        Starman::Content.stub(:raw_content_dir).and_return(File.join(c, 'content'))
+        CloudCrooner.manifest.compile('blog/p1.mdown')
         @blog = Starman::Section.new("blog", "blog-proxy-124.json")
-        expect(@blog.posts).to eq(["blog/p1-123.mdown", "blog/p2-123.mdown", "blog/p3-123.mdown"])
+
+        expect(@blog.posts).to eq(["blog/p1"])
       end #construct
-    end
-  end # end section exists
+    end #it
+
+  end #context section exists
 
   it 'errors when the section does not exist' do
     expect{Starman::Section.new("fake_section", "doesnotexist.json")}.to raise_error(Starman::SectionNotFound)
-  end
+  end #it
+
+  it 'errors if the section has posts but none have been compiled' do
+    within_construct do |c|
+      sample_files(c)
+      CloudCrooner.prefix = 'content'
+      Starman::Content.stub(:raw_content_dir).and_return(File.join(c, 'content'))
+
+      expect{Starman::Section.new("blog", "blog-123.json")}.to raise_error(Starman::SectionEmpty)
+    end #construct
+  end #it
 
   after(:each) do
     reload_environment

@@ -20,7 +20,6 @@ CloudCrooner.configure do |config|
   config.serve_assets = "remote"
   #FIXME - temp hack to fix issues w section.posts
   # also fix tests - insufficient coverage for digest backups 
-  config.backups_to_keep = 0
   config.bucket_name = ENV['FOG_DIRECTORY']
   config.region = ENV['FOG_REGION']
   config.asset_paths = %w( assets content )
