@@ -18,17 +18,6 @@ module Starman
     end
 
     ##
-    # Gather the content requested by the glob minus directories 
-    #
-    def self.get_content(directory_glob)
-      content = Dir.glob(directory_glob)
-      # exclude directories
-      content.select { |item| File.file?(item) }
-      raise Starman::SectionEmpty.new(directory_glob) if content.size == 0 
-      return content
-    end
-
-    ##
     # location of unprocessed "raw" content
     # FIXME: not my favorite thing.
     #
