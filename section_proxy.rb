@@ -15,7 +15,9 @@ module Starman
     end
 
     def get_section_content
-      Content.get_content(File.join(Content.raw_content_dir, @section_name, '/*'))
+      files = Dir.glob(File.join(Content.raw_content_dir, @section_name, '/*'))
+      # exclude directories
+      files.select { |item| File.file?(item) }
     end
 
     ##
@@ -29,6 +31,12 @@ module Starman
     # out, who cares?
     #
     # Be nice if this worked: https://github.com/sstephenson/sprockets/issues/452
+    #
+    # These proxies will also be used to check if the section cache should be
+    # expired.
+    #
+    # proxies are json with [post name]: md5 hash. Post names are genuine 
+    # Post "names", with the Section name prepended and the format chomped
     #  
     def self.create_section_proxies
       empty_section_proxies
@@ -42,7 +50,8 @@ module Starman
     def write_proxy_for_section
       return if @files.empty?
       @files.each do |section_file|
-        @proxy[File.basename(section_file)] = Digest::MD5.file(section_file)
+      # remove content dir in path and file ext to leave post names
+        @proxy[section_file.gsub(Content.raw_content_dir + "/", "").chomp('.mdown')] = Digest::MD5.file(section_file)
       end
        # proxy file is a json of the filenames and their digests
       File.open(File.join(SectionProxy.proxies_dir, "#{@section_name}-proxy.json"), "w") do |f|
